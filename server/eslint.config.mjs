@@ -4,7 +4,7 @@ import globals from "globals";
 import { configs } from "typescript-eslint";
 
 export default [
-  { ignores: ["dist", "archived", "src/experiments"] },
+  { ignores: ["dist"] },
   { files: ["**/*.{js,mjs,cjs,ts}"] },
   { languageOptions: { globals: globals.node } },
   pluginJs.configs.recommended,

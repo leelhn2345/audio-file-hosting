@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres
+    container_name: web_audio_db
+    ports:
+      - ${DB_PORT:-5432}:5432
+    environment:
+      POSTGRES_USER: ${DB_USER:-user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_NAME:-web-audio}
