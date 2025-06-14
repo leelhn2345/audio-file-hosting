@@ -1,10 +1,12 @@
 import cors from "@fastify/cors";
+import fastifySecureSession from "@fastify/secure-session";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { fastify } from "fastify";
 
 import { corsConfig } from "@config/cors.js";
+import { sessionConfig } from "@config/session.js";
 import { swaggerConfig, swaggerUiConfig } from "@config/swagger.js";
 
 import { authenticationMiddleware } from "@middleware/authentication.js";
@@ -32,6 +34,7 @@ app.register(typeBoxFormatRegistry);
 
 // Plugins
 app.register(cors, corsConfig);
+app.register(fastifySecureSession, sessionConfig);
 
 // error handling
 app.setErrorHandler(errorHandler);

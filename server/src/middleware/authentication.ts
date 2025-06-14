@@ -13,4 +13,5 @@ export const excludedRoutesRegex = new RegExp(
 export function authenticationMiddleware(req: FastifyRequest) {
   if (excludedRoutesRegex.test(req.url)) return;
   getUserSession(req);
+  req.userSession.touch();
 }

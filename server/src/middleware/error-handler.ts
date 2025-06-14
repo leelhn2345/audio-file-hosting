@@ -1,4 +1,5 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
+import pg from "pg";
 
 import { CustomError } from "@errors/_custom-error.js";
 
@@ -22,6 +23,25 @@ export async function errorHandler(
       message: err.message,
       ...(err.data && { data: err.data }),
     });
+  }
+
+  if (err instanceof pg.DatabaseError) {
+    logger.error(`database error: ${err.message}`);
+
+    let statusCode: number;
+    switch (err.code) {
+      case "23505": // unique constraint violated
+        statusCode = 409;
+        reply.status(statusCode).send({ message: `${err.detail}` });
+        break;
+      case "22007": // invalid syntax (e.g. timestamptz)
+        statusCode = 400;
+        reply.status(statusCode).send({ message: err.message });
+        break;
+      default:
+        statusCode = 500;
+        reply.status(statusCode).send({ message: `${err.message}` });
+    }
   }
 
   logger.error("unknown error");

@@ -3,13 +3,9 @@ import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { LoginSchema } from "./auth.schema.js";
 
-import { AuthService } from "./auth.service.js";
-
 const tags = ["auth"];
 
 export async function authRouter(server: FastifyInstance) {
-  const authService = new AuthService();
-
   server.post("/auth/login", {
     schema: {
       tags,
