@@ -10,6 +10,8 @@ export const minioClient = new Client({
   secretKey: process.env.MINIO_SECRET_KEY,
 });
 
+export const presignExpiryDuration = 60 * 60; // in seconds
+
 export enum Buckets {
   AUDIO = "audio",
 }
