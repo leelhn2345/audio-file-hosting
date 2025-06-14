@@ -1,5 +1,5 @@
 import cors from "@fastify/cors";
-import fastifySecureSession from "@fastify/secure-session";
+import { fastifySecureSession } from "@fastify/secure-session";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
