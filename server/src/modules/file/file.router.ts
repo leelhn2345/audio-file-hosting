@@ -2,8 +2,9 @@ import { Static, Type as t } from "@sinclair/typebox";
 import { FastifyRequest } from "fastify";
 import { FastifyInstance } from "fastify/types/instance.js";
 
-import { BucketSchema } from "./file.schema.js";
+import { BucketSchema, DownloadUrlSchema } from "./file.schema.js";
 
+import { FileObjectSchema } from "@utils/schema.js";
 import { getUserSession } from "@utils/session.js";
 
 import { postPresignedUrl } from "./file.service.js";
@@ -18,6 +19,12 @@ export async function fileRouter(server: FastifyInstance) {
         bucket: BucketSchema,
         fileName: t.String(),
       }),
+      response: {
+        200: t.Object({
+          fileObject: FileObjectSchema,
+          presignedUrl: t.String(),
+        }),
+      },
     },
     handler: async (
       req: FastifyRequest<{
@@ -27,15 +34,25 @@ export async function fileRouter(server: FastifyInstance) {
     ) => {
       const user = getUserSession(req);
       const { bucket, fileName } = req.body;
-      const presignedUrl = await postPresignedUrl(bucket, fileName, user);
-      reply.send({ data: presignedUrl });
+      const { objectKey, presignedUrl } = await postPresignedUrl(
+        bucket,
+        fileName,
+        user,
+      );
+      reply.send({ fileObject: { bucket, objectKey }, presignedUrl });
     },
   });
 
-  server.get("/file/presigned-url", {
+  server.get("/file/download-url", {
     schema: {
       tags,
+      querystring: DownloadUrlSchema,
     },
-    handler: async (req, reply) => {},
+    handler: async (
+      req: FastifyRequest<{ Querystring: Static<typeof DownloadUrlSchema> }>,
+      reply,
+    ) => {
+      const { bucket, objectKey } = req.query;
+    },
   });
 }

@@ -4,7 +4,7 @@ import { userTable } from "./user.table.js";
 
 export const audioTable = pgTable("audios", {
   id: uuid().primaryKey(),
-  name: text().notNull(),
+  name: text().unique().notNull(),
   description: text(),
   artist: text(),
   releaseDate: timestamp({ withTimezone: true, mode: "string" }),

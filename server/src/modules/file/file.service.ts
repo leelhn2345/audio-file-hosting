@@ -8,10 +8,11 @@ export async function postPresignedUrl(
   user: UserSessionType,
 ) {
   const userId = user.id;
+  const objectKey = `${userId}/${fileName}`;
   const presignedUrl = await minioClient.presignedPutObject(
     bucket,
-    `${userId}/${fileName}`,
+    objectKey,
     presignExpiryDuration,
   );
-  return presignedUrl;
+  return { objectKey, presignedUrl };
 }
