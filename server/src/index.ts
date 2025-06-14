@@ -13,6 +13,7 @@ import { authenticationMiddleware } from "@middleware/authentication.js";
 import { errorHandler } from "@middleware/error-handler.js";
 
 import { authRouter } from "@modules/auth/auth.router.js";
+import { userRouter } from "@modules/user/user.router.js";
 
 import { logger } from "@utils/logger.js";
 import { typeBoxFormatRegistry } from "@utils/string-validator.js";
@@ -44,6 +45,7 @@ app.addHook("onRequest", authenticationMiddleware);
 
 // Routers
 app.register(authRouter);
+app.register(userRouter);
 
 /** for api health check */
 app.get("/api/health", () => {

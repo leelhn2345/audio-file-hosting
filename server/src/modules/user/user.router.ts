@@ -6,7 +6,7 @@ import { UserSchema } from "./user.schema.js";
 
 import { getUserSession } from "@utils/session.js";
 
-import { getUserData, putUserData } from "./user.service.js";
+import { deleteUserData, getUserData, putUserData } from "./user.service.js";
 
 const tags = ["user"];
 
@@ -45,6 +45,8 @@ export async function userRouter(server: FastifyInstance) {
     },
     handler: async (req, reply) => {
       const user = getUserSession(req);
+      await deleteUserData(user);
+      req.userSession.delete();
       reply.send({ message: "User data successfully deleted." });
     },
   });

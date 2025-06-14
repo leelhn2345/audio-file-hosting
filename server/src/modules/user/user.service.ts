@@ -12,7 +12,7 @@ import { isoDatetime } from "@utils/datetime.js";
 
 export async function getUserData(user: UserSessionType) {
   const userData = await db
-    .select()
+    .select({ name: userTable.name, email: userTable.email })
     .from(userTable)
     .where(eq(userTable.id, user.id))
     .then((x) => {
@@ -42,4 +42,8 @@ export async function putUserData(
     });
 
   return newData;
+}
+
+export async function deleteUserData(user: UserSessionType) {
+  await db.delete(userTable).where(eq(userTable.id, user.id));
 }
