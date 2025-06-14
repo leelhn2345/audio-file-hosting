@@ -11,7 +11,7 @@ import { postPresignedUrl } from "./file.service.js";
 const tags = ["file"];
 
 export async function fileRouter(server: FastifyInstance) {
-  server.post("/presigned-url", {
+  server.post("/file/upload-url", {
     schema: {
       tags,
       body: t.Object({
@@ -32,7 +32,7 @@ export async function fileRouter(server: FastifyInstance) {
     },
   });
 
-  server.get("/presigned-url", {
+  server.get("/file/presigned-url", {
     schema: {
       tags,
     },
