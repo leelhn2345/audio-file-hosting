@@ -1,3 +1,4 @@
+import { DrizzleQueryError } from "drizzle-orm/errors";
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import pg from "pg";
 
@@ -25,23 +26,22 @@ export async function errorHandler(
     });
   }
 
-  if (err instanceof pg.DatabaseError) {
-    logger.error(`database error: ${err.message}`);
+  if (err instanceof DrizzleQueryError) {
+    const { cause } = err;
 
-    let statusCode: number;
-    switch (err.code) {
-      case "23505": // unique constraint violated
-        statusCode = 409;
-        reply.status(statusCode).send({ message: `${err.detail}` });
-        break;
-      case "22007": // invalid syntax (e.g. timestamptz)
-        statusCode = 400;
-        reply.status(statusCode).send({ message: err.message });
-        break;
-      default:
-        statusCode = 500;
-        reply.status(statusCode).send({ message: `${err.message}` });
+    if (cause instanceof pg.DatabaseError) {
+      switch (cause.code) {
+        case "23505": // unique constraint violated
+          reply.status(409).send({ message: `${cause.detail}` });
+          break;
+        case "22007": // invalid syntax (e.g. timestamptz)
+          reply.status(400).send({ message: err.message });
+          break;
+        default:
+          reply.status(500).send({ message: `${cause.message}` });
+      }
     }
+    reply.status(500).send({ message: "Something went wrong." });
   }
 
   logger.error("unknown error");
