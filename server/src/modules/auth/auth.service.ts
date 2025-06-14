@@ -7,13 +7,12 @@ import { db } from "@db/index.js";
 import { userTable } from "@db/tables/user.table.js";
 
 import { NotFoundError } from "@errors/not-found.js";
+import { UnauthorizedError } from "@errors/unauthorized.js";
 
 import { LoginSchema, SignUpSchema } from "./auth.schema.js";
 
 import { logger } from "@utils/logger.js";
 import { lower } from "@utils/sql.js";
-
-import { UnauthorizedError } from "../errors/unauthorized.js";
 
 export async function registration(data: Static<typeof SignUpSchema>) {
   const saltRounds = 10; // Cost factor (10-12 is recommended)

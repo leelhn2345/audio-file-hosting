@@ -41,6 +41,9 @@ importers:
       drizzle-orm:
         specifier: ^0.44.2
         version: 0.44.2(@types/pg@8.15.4)(kysely@0.28.2)(pg@8.16.0)
+      drizzle-typebox:
+        specifier: ^0.3.3
+        version: 0.3.3(@sinclair/typebox@0.34.33)(drizzle-orm@0.44.2(@types/pg@8.15.4)(kysely@0.28.2)(pg@8.16.0))
       fast-uri:
         specifier: ^3.0.6
         version: 3.0.6
@@ -1080,6 +1083,12 @@ packages:
         optional: true
       sqlite3:
         optional: true
+
+  drizzle-typebox@0.3.3:
+    resolution: {integrity: sha512-iJpW9K+BaP8+s/ImHxOFVjoZk9G5N/KXFTOpWcFdz9SugAOWv2fyGaH7FmqgdPo+bVNYQW0OOI3U9dkFIVY41w==}
+    peerDependencies:
+      '@sinclair/typebox': '>=0.34.8'
+      drizzle-orm: '>=0.36.0'
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -2660,6 +2669,11 @@ snapshots:
       '@types/pg': 8.15.4
       kysely: 0.28.2
       pg: 8.16.0
+
+  drizzle-typebox@0.3.3(@sinclair/typebox@0.34.33)(drizzle-orm@0.44.2(@types/pg@8.15.4)(kysely@0.28.2)(pg@8.16.0)):
+    dependencies:
+      '@sinclair/typebox': 0.34.33
+      drizzle-orm: 0.44.2(@types/pg@8.15.4)(kysely@0.28.2)(pg@8.16.0)
 
   eastasianwidth@0.2.0: {}
 

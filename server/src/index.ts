@@ -1,5 +1,5 @@
 import cors from "@fastify/cors";
-import fastifySecureSession from "@fastify/secure-session";
+import { fastifySecureSession } from "@fastify/secure-session";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
@@ -12,7 +12,8 @@ import { swaggerConfig, swaggerUiConfig } from "@config/swagger.js";
 import { authenticationMiddleware } from "@middleware/authentication.js";
 import { errorHandler } from "@middleware/error-handler.js";
 
-import { authRouter } from "@modules/auth.router.js";
+import { authRouter } from "@modules/auth/auth.router.js";
+import { userRouter } from "@modules/user/user.router.js";
 
 import { logger } from "@utils/logger.js";
 import { typeBoxFormatRegistry } from "@utils/string-validator.js";
@@ -44,6 +45,7 @@ app.addHook("onRequest", authenticationMiddleware);
 
 // Routers
 app.register(authRouter);
+app.register(userRouter);
 
 /** for api health check */
 app.get("/api/health", () => {
