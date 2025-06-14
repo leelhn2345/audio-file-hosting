@@ -1,13 +1,22 @@
+import cors from "@fastify/cors";
+import fastifySecureSession from "@fastify/secure-session";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { fastify } from "fastify";
 
+import { corsConfig } from "@config/cors.js";
+import { sessionConfig } from "@config/session.js";
 import { swaggerConfig, swaggerUiConfig } from "@config/swagger.js";
+
+import { authenticationMiddleware } from "@middleware/authentication.js";
+import { errorHandler } from "@middleware/error-handler.js";
 
 import { authRouter } from "@modules/auth.router.js";
 
 import { logger } from "@utils/logger.js";
+import { typeBoxFormatRegistry } from "@utils/string-validator.js";
+import { setValidatorCompiler } from "@utils/validator.js";
 
 const app = fastify().withTypeProvider<TypeBoxTypeProvider>();
 
@@ -17,6 +26,23 @@ if (process.env.NODE_ENV !== "production") {
   app.register(swaggerUI, swaggerUiConfig);
 }
 
+// initialize custom json schema validator
+setValidatorCompiler(app);
+
+// typebox string validator
+app.register(typeBoxFormatRegistry);
+
+// Plugins
+app.register(cors, corsConfig);
+app.register(fastifySecureSession, sessionConfig);
+
+// error handling
+app.setErrorHandler(errorHandler);
+
+// hooks
+app.addHook("onRequest", authenticationMiddleware);
+
+// Routers
 app.register(authRouter);
 
 /** for api health check */

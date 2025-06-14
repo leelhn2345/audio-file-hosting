@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres
+    container_name: web_audio_db
+    ports:
+      - ${DB_PORT:-5432}:5432
+    environment:
+      POSTGRES_USER: ${DB_USER:-user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_NAME:-web-audio}
+
+  minio:
+    image: quay.io/minio/minio
+    container_name: web_audio_storage
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER:-minioUser}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-minioPassword}
+    volumes:
+      - ~/minio/data:/data
+    command:
+      - server
+      - /data
+      - --console-address
+      - ":9001"
