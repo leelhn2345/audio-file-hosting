@@ -11,14 +11,12 @@ import { UnauthorizedError } from "@errors/unauthorized.js";
 
 import { LoginSchema, SignUpSchema } from "./auth.schema.js";
 
-import { logger } from "@utils/logger.js";
 import { lower } from "@utils/sql.js";
 
 export async function registration(data: Static<typeof SignUpSchema>) {
   const saltRounds = 10; // Cost factor (10-12 is recommended)
   const { password, ...rest } = data;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
-  logger.debug(hashedPassword);
 
   const user = await db
     .insert(userTable)
@@ -35,6 +33,7 @@ export async function registration(data: Static<typeof SignUpSchema>) {
       email: userTable.email,
     })
     .then((x) => x[0]);
+
   return user;
 }
 

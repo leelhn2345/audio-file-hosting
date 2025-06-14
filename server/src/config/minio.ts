@@ -14,7 +14,9 @@ export enum Buckets {
   AUDIO = "audio",
 }
 
-// Initialize bucket if it doesn't exist
+/**
+ * Initialilze buckets if it doesn't exist.
+ */
 export async function initializeBuckets() {
   try {
     const buckets = Object.values(Buckets);
@@ -30,4 +32,3 @@ export async function initializeBuckets() {
     throw error;
   }
 }
-
