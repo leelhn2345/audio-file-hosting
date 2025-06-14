@@ -7,11 +7,14 @@ import { fastify } from "fastify";
 import { corsConfig } from "@config/cors.js";
 import { swaggerConfig, swaggerUiConfig } from "@config/swagger.js";
 
+import { authenticationMiddleware } from "@middleware/authentication.js";
 import { errorHandler } from "@middleware/error-handler.js";
 
 import { authRouter } from "@modules/auth.router.js";
 
 import { logger } from "@utils/logger.js";
+import { typeBoxFormatRegistry } from "@utils/string-validator.js";
+import { setValidatorCompiler } from "@utils/validator.js";
 
 const app = fastify().withTypeProvider<TypeBoxTypeProvider>();
 
@@ -21,11 +24,20 @@ if (process.env.NODE_ENV !== "production") {
   app.register(swaggerUI, swaggerUiConfig);
 }
 
+// initialize custom json schema validator
+setValidatorCompiler(app);
+
+// typebox string validator
+app.register(typeBoxFormatRegistry);
+
+// Plugins
+app.register(cors, corsConfig);
+
 // error handling
 app.setErrorHandler(errorHandler);
 
-// CORS
-app.register(cors, corsConfig);
+// hooks
+app.addHook("onRequest", authenticationMiddleware);
 
 // Routers
 app.register(authRouter);

@@ -44,6 +44,9 @@ importers:
       drizzle-orm:
         specifier: ^0.44.2
         version: 0.44.2(@types/pg@8.15.4)(kysely@0.28.2)(pg@8.16.0)
+      fast-uri:
+        specifier: ^3.0.6
+        version: 3.0.6
       fastify:
         specifier: ^5.4.0
         version: 5.4.0
