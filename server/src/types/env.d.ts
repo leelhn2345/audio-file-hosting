@@ -1,3 +1,4 @@
+export {};
 // this file is for `process.env` type checks
 declare global {
   namespace NodeJS {
