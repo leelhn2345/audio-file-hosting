@@ -70,4 +70,9 @@ export function setValidatorCompiler(server: FastifyInstance) {
   server.setValidatorCompiler((req) =>
     getValidatorCompiler(req as ValidatorCompilerRequest),
   );
+
+  // Set serializer compiler for response schemas  
+  server.setSerializerCompiler(() => {
+    return (data) => JSON.stringify(data);
+  });
 }
