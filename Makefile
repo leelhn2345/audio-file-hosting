@@ -13,7 +13,7 @@
 # - Create 'mk/*.mk' for custom targets.
 #
 
-##@ Colours
+## Colours
 # example usage with other makefiles
 #
 # ```mk
