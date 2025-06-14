@@ -3,11 +3,13 @@ import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { LoginSchema } from "./auth.schema.js";
 
-import { login } from "./auth.service.js";
+import { AuthService } from "./auth.service.js";
 
 const tags = ["auth"];
 
 export async function authRouter(server: FastifyInstance) {
+  const authService = new AuthService();
+
   server.post("/auth/login", {
     schema: {
       tags,
@@ -16,14 +18,7 @@ export async function authRouter(server: FastifyInstance) {
     handler: async (
       req: FastifyRequest<{ Body: Static<typeof LoginSchema> }>,
       reply,
-    ) => {
-      await login(req.body);
-
-      return reply.code(200).send({
-        success: true,
-        message: "Login successful",
-      });
-    },
+    ) => {},
   });
 
   server.get("/auth/user-jwt", {
@@ -37,6 +32,10 @@ export async function authRouter(server: FastifyInstance) {
     schema: {
       tags,
     },
-    handler: async (req, reply) => {},
+    handler: async (req, reply) => {
+      reply.code(200).send({
+        message: "Logout successful",
+      });
+    },
   });
 }

@@ -1,6 +1,4 @@
-import { Static } from "@sinclair/typebox";
+import bcrypt from "bcrypt";
 
-import { LoginSchema } from "./auth.schema.js";
-
-export async function login(data: Static<typeof LoginSchema>) {}
-
+import { BadRequest } from "../errors/bad-request.js";
+import { UnauthorizedError } from "../errors/unauthorized.js";

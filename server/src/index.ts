@@ -1,9 +1,13 @@
+import cors from "@fastify/cors";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { fastify } from "fastify";
 
+import { corsConfig } from "@config/cors.js";
 import { swaggerConfig, swaggerUiConfig } from "@config/swagger.js";
+
+import { errorHandler } from "@middleware/error-handler.js";
 
 import { authRouter } from "@modules/auth.router.js";
 
@@ -17,6 +21,13 @@ if (process.env.NODE_ENV !== "production") {
   app.register(swaggerUI, swaggerUiConfig);
 }
 
+// error handling
+app.setErrorHandler(errorHandler);
+
+// CORS
+app.register(cors, corsConfig);
+
+// Routers
 app.register(authRouter);
 
 /** for api health check */
