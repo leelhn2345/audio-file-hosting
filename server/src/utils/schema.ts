@@ -1,4 +1,6 @@
-import { SchemaOptions, TSchema, Type as t } from "@sinclair/typebox";
+import { SchemaOptions, Static, TSchema, Type as t } from "@sinclair/typebox";
+
+import { Buckets } from "@config/minio.js";
 
 /**
  * This function extends the schema to be either `undefined` or `null`.
@@ -34,3 +36,10 @@ export function stringEnum<T extends string[]>(
     ...schemaOptions,
   });
 }
+
+export const FileObjectSchema = t.Object({
+  bucket: stringEnum(Object.values(Buckets)),
+  objectKey: t.String(),
+});
+
+export type FileObjectType = Static<typeof FileObjectSchema>;
