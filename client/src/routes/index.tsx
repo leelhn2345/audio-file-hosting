@@ -1,4 +1,3 @@
-import { isAuthenticated } from "@/utils/auth";
 import { userAtom } from "@stores/user";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";

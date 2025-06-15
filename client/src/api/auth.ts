@@ -26,6 +26,7 @@ export async function login(data: unknown) {
 
   const result = await res.json();
   if (!res.ok) throw new Error(result.message);
+  await getUserJwt();
 
   return result;
 }
@@ -52,4 +53,5 @@ export async function logout() {
     method: "POST",
     credentials: "include",
   });
+  Cookies.remove("userProfile");
 }

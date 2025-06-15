@@ -1,17 +1,41 @@
 import { Button } from "@ui/button";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { useAtom } from "jotai";
+import { userAtom } from "@stores/user";
+import { LogOut, UserCog, UserRound } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@ui/dropdown-menu";
+import { useMutation } from "@tanstack/react-query";
 import { logout } from "@/api/auth";
-import { useAtomValue } from "jotai";
-import { userAtom } from "@/stores/user";
-import { UserRound } from "lucide-react";
+import { toast } from "sonner";
 
 type Props = {
   children: ReactNode;
 };
 
 export function Header({ children }: Props) {
-  const user = useAtomValue(userAtom);
+  const [user, setUser] = useAtom(userAtom);
+  const navigate = useNavigate();
+  const { mutate } = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      setUser(undefined);
+      toast.success("Logout successful.");
+      navigate({ to: "/" });
+    },
+  });
+
+  function handleLogout() {
+    mutate();
+  }
+
   return (
     <header
       className="border-border/40 bg-background/90 supports-[backdrop-filter]:bg-background/60
@@ -22,7 +46,25 @@ export function Header({ children }: Props) {
         <div className="flex items-center gap-x-2">
           {user ? (
             <>
-              <UserRound />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost">
+                    <UserRound />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-40">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuItem>
+                    <UserCog className="mr-2 h-4 w-4" />
+                    <span>Manage Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </>
           ) : (
             <>
