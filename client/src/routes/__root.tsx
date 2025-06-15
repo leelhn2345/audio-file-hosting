@@ -15,7 +15,9 @@ export const Route = createRootRoute({
         <NavBar navigation={tabs} />
       </Header>
       <hr />
-      <Outlet />
+      <main className="container mx-auto">
+        <Outlet />
+      </main>
       <TanStackRouterDevtools />
     </>
   ),

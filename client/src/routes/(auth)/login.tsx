@@ -43,7 +43,7 @@ function RouteComponent() {
     console.log(values);
   }
   return (
-    <main className="container mx-auto mt-10 flex flex-col items-center">
+    <div className="mt-10 flex flex-col items-center">
       <h1 className="mb-4 text-2xl font-bold">Login</h1>
       <p className="mb-6">Welcome back~</p>
 
@@ -78,6 +78,6 @@ function RouteComponent() {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
-    </main>
+    </div>
   );
 }
