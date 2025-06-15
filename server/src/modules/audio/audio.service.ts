@@ -21,3 +21,9 @@ export async function getAudio(audioId: string, user: UserSessionType) {
 
   return data;
 }
+
+export async function deleteAudio(audioId: string, user: UserSessionType) {
+  await db
+    .delete(audioTable)
+    .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)));
+}

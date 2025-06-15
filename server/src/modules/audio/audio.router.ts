@@ -6,7 +6,7 @@ import { AudioPaginationSchema, AudioTableSchema } from "./audio.schema.js";
 
 import { getUserSession } from "@utils/session.js";
 
-import { getAudio } from "./audio.service.js";
+import { deleteAudio, getAudio } from "./audio.service.js";
 
 const tags = ["audio"];
 
@@ -71,6 +71,8 @@ export async function audioRouter(server: FastifyInstance) {
       req: FastifyRequest<{ Params: { audioId: string } }>,
       reply,
     ) => {
+      const user = getUserSession(req);
+      await deleteAudio(req.params.audioId, user);
       reply.send({ message: "Audio successfully deleted." });
     },
   });
