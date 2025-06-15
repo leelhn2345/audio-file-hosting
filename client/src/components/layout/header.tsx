@@ -1,14 +1,17 @@
 import { Button } from "@ui/button";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { isAuthenticated } from "@/utils/auth";
 import { logout } from "@/api/auth";
+import { useAtomValue } from "jotai";
+import { userAtom } from "@/stores/user";
+import { UserRound } from "lucide-react";
 
 type Props = {
   children: ReactNode;
 };
 
 export function Header({ children }: Props) {
+  const user = useAtomValue(userAtom);
   return (
     <header
       className="border-border/40 bg-background/90 supports-[backdrop-filter]:bg-background/60
@@ -17,7 +20,11 @@ export function Header({ children }: Props) {
       <div className="container mx-auto flex h-12 justify-between max-sm:px-2">
         {children}
         <div className="flex items-center gap-x-2">
-          {isAuthenticated() ? (
+          {user ? (
+            <>
+              <UserRound />
+            </>
+          ) : (
             <>
               <Button variant="outline" asChild>
                 <Link to="/login">Login</Link>
@@ -26,10 +33,6 @@ export function Header({ children }: Props) {
                 <Link to="/register">Register</Link>
               </Button>
             </>
-          ) : (
-            <Button variant="outline" onClick={logout}>
-              Logout
-            </Button>
           )}
         </div>
       </div>

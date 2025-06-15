@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,11 +15,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/api/auth";
 import { toast } from "sonner";
+import { useSetAtom } from "jotai";
+import { userAtom } from "@stores/user";
+import { isAuthenticated } from "@/utils/auth";
 
 const loginSchema = z.object({ email: z.string().optional() });
 
 export const Route = createFileRoute("/(auth)/login")({
   component: RouteComponent,
+  beforeLoad: () => {
+    if (isAuthenticated()) {
+      throw redirect({ to: "/" });
+    }
+  },
   validateSearch: loginSchema,
 });
 
@@ -30,6 +38,8 @@ const formSchema = z.object({
 
 function RouteComponent() {
   const { email } = Route.useSearch();
+  const setUserAtom = useSetAtom(userAtom);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,8 +52,10 @@ function RouteComponent() {
   const { mutate } = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => login(values),
     onSuccess: (data) => {
-      toast.success(data.message);
+      toast.success("Successful login.");
       form.reset();
+      setUserAtom(data);
+      navigate({ to: "/" });
     },
 
     onError: (err) => toast.error(err.message),

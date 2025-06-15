@@ -27,12 +27,10 @@ export async function login(data: unknown) {
   const result = await res.json();
   if (!res.ok) throw new Error(result.message);
 
-  await getUserJwt();
-
   return result;
 }
 
-export async function getUserJwt() {
+async function getUserJwt() {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/user-jwt`, {
     method: "POST",
     credentials: "include",
