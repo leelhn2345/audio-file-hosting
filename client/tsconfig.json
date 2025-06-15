@@ -8,4 +8,15 @@
       "path": "./tsconfig.node.json"
     }
   ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@ui/*": [
+        "./src/components/ui/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
 }
