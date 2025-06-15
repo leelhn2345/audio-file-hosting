@@ -1,8 +1,12 @@
+import { Static } from "@sinclair/typebox";
+
 import { Buckets, minioClient, presignExpiryDuration } from "@config/minio.js";
 
 import { DuplicatedError } from "@errors/duplicate.js";
 
 import { UserSessionType } from "@modules/user/user.schema.js";
+
+import { FileObjectSchema } from "@utils/schema.js";
 
 async function checkIfObjectExists(bucket: Buckets, objectKey: string) {
   try {
@@ -34,5 +38,20 @@ export async function postPresignedUrl(
     objectKey,
     presignExpiryDuration,
   );
-  return { objectKey, presignedUrl };
+  const fileObject = { bucket, objectKey };
+  return { fileObject, presignedUrl };
+}
+
+export async function getPresignedUrl(
+  fileObject: Static<typeof FileObjectSchema>,
+) {
+  const { bucket, objectKey } = fileObject;
+
+  const presignedUrl = await minioClient.presignedGetObject(
+    bucket,
+    objectKey,
+    presignExpiryDuration,
+  );
+
+  return presignedUrl;
 }

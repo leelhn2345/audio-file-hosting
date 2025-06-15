@@ -10,8 +10,3 @@ export const UploadUrlSchema = t.Object({
   bucket: BucketSchema,
   fileName: t.String(),
 });
-
-export const DownloadUrlSchema = t.Object({
-  bucket: BucketSchema,
-  objectKey: t.String(),
-});

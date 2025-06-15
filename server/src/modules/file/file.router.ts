@@ -2,12 +2,12 @@ import { Static, Type as t } from "@sinclair/typebox";
 import { FastifyRequest } from "fastify";
 import { FastifyInstance } from "fastify/types/instance.js";
 
-import { BucketSchema, DownloadUrlSchema } from "./file.schema.js";
+import { BucketSchema } from "./file.schema.js";
 
 import { FileObjectSchema } from "@utils/schema.js";
 import { getUserSession } from "@utils/session.js";
 
-import { postPresignedUrl } from "./file.service.js";
+import { getPresignedUrl, postPresignedUrl } from "./file.service.js";
 
 const tags = ["file"];
 
@@ -34,25 +34,26 @@ export async function fileRouter(server: FastifyInstance) {
     ) => {
       const user = getUserSession(req);
       const { bucket, fileName } = req.body;
-      const { objectKey, presignedUrl } = await postPresignedUrl(
+      const { fileObject, presignedUrl } = await postPresignedUrl(
         bucket,
         fileName,
         user,
       );
-      reply.send({ fileObject: { bucket, objectKey }, presignedUrl });
+      reply.send({ fileObject, presignedUrl });
     },
   });
 
   server.get("/file/download-url", {
     schema: {
       tags,
-      querystring: DownloadUrlSchema,
+      querystring: FileObjectSchema,
     },
     handler: async (
-      req: FastifyRequest<{ Querystring: Static<typeof DownloadUrlSchema> }>,
+      req: FastifyRequest<{ Querystring: Static<typeof FileObjectSchema> }>,
       reply,
     ) => {
-      const { bucket, objectKey } = req.query;
+      const presignedUrl = await getPresignedUrl(req.query);
+      reply.send({ presignedUrl });
     },
   });
 }
