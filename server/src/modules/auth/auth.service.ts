@@ -2,6 +2,7 @@ import { Static } from "@sinclair/typebox";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 import { eq } from "drizzle-orm";
+import { SignJWT } from "jose";
 
 import { db } from "@db/index.js";
 import { userTable } from "@db/tables/user.table.js";
@@ -10,6 +11,7 @@ import { NotFoundError } from "@errors/not-found.js";
 import { UnauthorizedError } from "@errors/unauthorized.js";
 
 import { LoginSchema, SignUpSchema } from "./auth.schema.js";
+import { UserSessionType } from "@modules/user/user.schema.js";
 
 import { lower } from "@utils/sql.js";
 
@@ -54,4 +56,13 @@ export async function login(data: Static<typeof LoginSchema>) {
     throw new UnauthorizedError("Invalid credentials.");
   }
   return { id: user.id, email: user.email, name: user.name };
+}
+
+export async function getUserJwt(user: UserSessionType) {
+  const key = new TextEncoder().encode(process.env.JWT_SECRET);
+  const jwt = await new SignJWT(user)
+    .setProtectedHeader({ alg: "HS256" })
+    .sign(key);
+
+  return jwt;
 }

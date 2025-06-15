@@ -1,12 +1,11 @@
-import { Static } from "@sinclair/typebox";
+import { Static, Type as t } from "@sinclair/typebox";
 import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { LoginSchema, SignUpSchema } from "./auth.schema.js";
-import { TestSchema } from "@modules/user/user.schema.js";
 
-import { logger } from "@utils/logger.js";
+import { getUserSession } from "@utils/session.js";
 
-import { login, registration } from "./auth.service.js";
+import { getUserJwt, login, registration } from "./auth.service.js";
 
 const tags = ["auth"];
 
@@ -43,16 +42,13 @@ export async function authRouter(server: FastifyInstance) {
   server.post("/auth/user-jwt", {
     schema: {
       tags,
-      body: TestSchema,
+      response: { 200: t.String() },
     },
-    handler: async (
-      req: FastifyRequest<{ Body: Static<typeof TestSchema> }>,
-      reply,
-    ) => {
-      logger.debug(req.body);
-      // const user = getUserSession(req);
-      reply.send(req.body);
-      // logger.debug({ user });
+    handler: async (req, reply) => {
+      const user = getUserSession(req);
+
+      const jwt = await getUserJwt(user);
+      reply.send(jwt);
     },
   });
 
