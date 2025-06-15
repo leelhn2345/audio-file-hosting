@@ -1,29 +1,28 @@
+import { Button } from "@ui/button";
 import { Link } from "@tanstack/react-router";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@ui/navigation-menu";
+import type { ReactNode } from "react";
 
-export type NavBarNavigation = { href: string; title: string }[];
+type Props = {
+  children: ReactNode;
+};
 
-type Props = { navigation: NavBarNavigation };
-
-export function NavBar({ navigation }: Props) {
+export function Header({ children }: Props) {
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        {navigation.map((x) => (
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild className="focus:bg-transparent">
-              <Link to={x.href} className="[&.active]:font-bold">
-                <span className="text-xl">{x.title}</span>
-              </Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ))}
-      </NavigationMenuList>
-    </NavigationMenu>
+    <header
+      className="border-border/40 bg-background/90 supports-[backdrop-filter]:bg-background/60
+        sticky top-0 z-50 w-full border-b backdrop-blur"
+    >
+      <div className="container mx-auto flex h-12 justify-between max-sm:px-2">
+        {children}
+        <div className="flex items-center gap-x-2">
+          <Button variant="outline" asChild>
+            <Link to="/login">Login</Link>
+          </Button>
+          <Button asChild>
+            <Link to="/register">Register</Link>
+          </Button>
+        </div>
+      </div>
+    </header>
   );
 }

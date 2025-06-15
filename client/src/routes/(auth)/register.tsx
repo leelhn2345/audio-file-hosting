@@ -13,6 +13,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
+import { register } from "@/api/auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/(auth)/register")({
   component: RouteComponent,
@@ -40,10 +43,17 @@ function RouteComponent() {
     },
   });
 
+  const { mutate } = useMutation({
+    mutationFn: (values: z.infer<typeof formSchema>) => register(values),
+    onSuccess: (data) => toast(data),
+    onError: (err) => toast.error(err.message),
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+    mutate(values);
   }
 
   return (
