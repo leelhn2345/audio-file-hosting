@@ -6,8 +6,8 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-    </div>
+    <main className="container mx-auto">
+      <h1>Welcome Home!</h1>
+    </main>
   );
 }
