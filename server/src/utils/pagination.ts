@@ -14,7 +14,7 @@ export enum SortOrder {
   DESC = "desc",
 }
 
-export const PaginationFilterSchema = t.Object({
+export const PaginationSchema = t.Object({
   offset: t.Optional(
     t.Number({
       description: "default value is `0`.\n\nnumber of rows to skip.",
@@ -42,7 +42,7 @@ export const PaginationFilterSchema = t.Object({
   ),
 });
 
-export type PaginationFilterType = Static<typeof PaginationFilterSchema>;
+export type PaginationType = Static<typeof PaginationSchema>;
 
 export function queryOrderBy(
   paginationSortBy?: string,
