@@ -1,5 +1,4 @@
 import { Button } from "@ui/button";
-import { NavBar } from "./header";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
@@ -17,10 +16,10 @@ export function Header({ children }: Props) {
         {children}
         <div className="flex items-center gap-x-2">
           <Button variant="outline" asChild>
-            <Link to="/login">Sign In</Link>
+            <Link to="/login">Login</Link>
           </Button>
           <Button asChild>
-            <Link to="/register">Sign Up</Link>
+            <Link to="/register">Register</Link>
           </Button>
         </div>
       </div>
