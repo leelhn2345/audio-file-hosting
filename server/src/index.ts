@@ -6,6 +6,7 @@ import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { fastify } from "fastify";
 
 import { corsConfig } from "@config/cors.js";
+import { initializeBuckets } from "@config/minio.js";
 import { sessionConfig } from "@config/session.js";
 import { swaggerConfig, swaggerUiConfig } from "@config/swagger.js";
 
@@ -13,6 +14,7 @@ import { authenticationMiddleware } from "@middleware/authentication.js";
 import { errorHandler } from "@middleware/error-handler.js";
 
 import { authRouter } from "@modules/auth/auth.router.js";
+import { fileRouter } from "@modules/file/file.router.js";
 import { userRouter } from "@modules/user/user.router.js";
 
 import { logger } from "@utils/logger.js";
@@ -27,11 +29,12 @@ if (process.env.NODE_ENV !== "production") {
   app.register(swaggerUI, swaggerUiConfig);
 }
 
-// initialize custom json schema validator
+// schema validator customizations
 setValidatorCompiler(app);
-
-// typebox string validator
 app.register(typeBoxFormatRegistry);
+
+// init s3 storage
+await initializeBuckets();
 
 // Plugins
 app.register(cors, corsConfig);
@@ -46,6 +49,7 @@ app.addHook("onRequest", authenticationMiddleware);
 // Routers
 app.register(authRouter);
 app.register(userRouter);
+app.register(fileRouter);
 
 /** for api health check */
 app.get("/api/health", () => {

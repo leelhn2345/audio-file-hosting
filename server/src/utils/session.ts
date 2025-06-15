@@ -3,7 +3,7 @@ import { FastifyRequest } from "fastify";
 
 import { UnauthorizedError } from "@errors/unauthorized.js";
 
-import { UserSessionSchema } from "@modules/auth.schema.js";
+import { UserSessionSchema } from "@modules/auth/auth.schema.js";
 
 export function getUserSession(
   req: FastifyRequest,
