@@ -6,6 +6,10 @@ export async function register(data: unknown) {
       "Content-Type": "application/json",
     },
   });
+  if (!res.ok) {
+    const errData = await res.json();
+    throw new Error(errData.message);
+  }
   const result = await res.json();
   return result;
 }

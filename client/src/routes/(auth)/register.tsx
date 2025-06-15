@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -24,16 +24,11 @@ export const Route = createFileRoute("/(auth)/register")({
 const formSchema = z.object({
   name: z.string().nonempty(),
   email: z.string().email({ message: "Invalid email address format." }),
-  password: z
-    .string()
-    .min(12, "Password must be at least 12 characters long")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
-    ),
+  password: z.string().min(8),
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,14 +40,15 @@ function RouteComponent() {
 
   const { mutate } = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => register(values),
-    onSuccess: (data) => toast(data),
+    onSuccess: (data) => {
+      toast.success(data.message);
+      form.reset();
+      navigate({ to: "/login" });
+    },
     onError: (err) => toast.error(err.message),
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
     mutate(values);
   }
 

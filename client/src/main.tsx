@@ -31,7 +31,7 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        <Toaster />
+        <Toaster richColors position="top-right" />
         <ReactQueryDevtools />
       </QueryClientProvider>
     </StrictMode>,
