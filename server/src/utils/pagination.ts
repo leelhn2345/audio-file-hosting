@@ -41,6 +41,7 @@ export const PaginationFilterSchema = t.Object({
     }),
   ),
 });
+
 export type PaginationFilterType = Static<typeof PaginationFilterSchema>;
 
 export function queryOrderBy(
