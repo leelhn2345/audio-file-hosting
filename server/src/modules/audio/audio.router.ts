@@ -2,12 +2,21 @@ import { Static, Type as t } from "@sinclair/typebox";
 import { FastifyInstance } from "fastify/types/instance.js";
 import { FastifyRequest } from "fastify/types/request.js";
 
-import { AudioPaginationSchema, AudioTableSchema } from "./audio.schema.js";
+import {
+  AudioPaginationSchema,
+  AudioTableSchema,
+  PostAudioSchema,
+} from "./audio.schema.js";
 
 import { allDataSchemaExtender } from "@utils/schema.js";
 import { getUserSession } from "@utils/session.js";
 
-import { deleteAudio, getAllAudios, getAudio } from "./audio.service.js";
+import {
+  deleteAudio,
+  getAllAudios,
+  getAudio,
+  postAudio,
+} from "./audio.service.js";
 
 const tags = ["audio"];
 
@@ -53,8 +62,14 @@ export async function audioRouter(server: FastifyInstance) {
   server.post("/audio", {
     schema: {
       tags,
+      body: PostAudioSchema,
     },
-    handler: async (req, reply) => {
+    handler: async (
+      req: FastifyRequest<{ Body: Static<typeof PostAudioSchema> }>,
+      reply,
+    ) => {
+      const user = getUserSession(req);
+      await postAudio(req.body, user);
       reply.status(201).send({ message: "Audio successfully uploaded." });
     },
   });
@@ -68,6 +83,7 @@ export async function audioRouter(server: FastifyInstance) {
       req: FastifyRequest<{ Params: { audioId: string } }>,
       reply,
     ) => {
+      const user = getUserSession(req);
       reply.send({ message: "Audio successfully modified." });
     },
   });

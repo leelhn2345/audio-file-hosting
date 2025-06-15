@@ -1,10 +1,11 @@
 import { Static } from "@sinclair/typebox";
+import { randomUUID } from "crypto";
 import { and, eq } from "drizzle-orm";
 
 import { db } from "@db/index.js";
 import { audioTable } from "@db/tables/audio.table.js";
 
-import { AudioPaginationSchema } from "./audio.schema.js";
+import { AudioPaginationSchema, PostAudioSchema } from "./audio.schema.js";
 import { UserSessionType } from "@modules/user/user.schema.js";
 
 import {
@@ -51,4 +52,15 @@ export async function deleteAudio(audioId: string, user: UserSessionType) {
   await db
     .delete(audioTable)
     .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)));
+}
+
+export async function postAudio(
+  data: Static<typeof PostAudioSchema>,
+  user: UserSessionType,
+) {
+  await db.insert(audioTable).values({
+    id: randomUUID(),
+    ...data,
+    uploadedBy: user.id,
+  });
 }

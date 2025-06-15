@@ -4,6 +4,7 @@ import { createInsertSchema } from "drizzle-typebox";
 import { audioTable } from "@db/tables/audio.table.js";
 
 import { PaginationSchema } from "@utils/pagination.js";
+import { FileObjectSchema } from "@utils/schema.js";
 
 export const AudioPaginationSchema = t.Composite([
   PaginationSchema,
@@ -14,4 +15,14 @@ export const AudioPaginationSchema = t.Composite([
   }),
 ]);
 
-export const AudioTableSchema = createInsertSchema(audioTable);
+export const AudioTableSchema = createInsertSchema(audioTable, {
+  fileObject: FileObjectSchema,
+});
+
+export const PostAudioSchema = t.Pick(AudioTableSchema, [
+  "name",
+  "fileObject",
+  "description",
+  "artist",
+  "releaseDate",
+]);
