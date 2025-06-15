@@ -5,7 +5,11 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@db/index.js";
 import { audioTable } from "@db/tables/audio.table.js";
 
-import { AudioPaginationSchema, PostAudioSchema } from "./audio.schema.js";
+import {
+  AudioPaginationSchema,
+  PostAudioSchema,
+  PutAudioSchema,
+} from "./audio.schema.js";
 import { UserSessionType } from "@modules/user/user.schema.js";
 
 import {
@@ -63,4 +67,15 @@ export async function postAudio(
     ...data,
     uploadedBy: user.id,
   });
+}
+
+export async function putAudio(
+  audioId: string,
+  data: Static<typeof PutAudioSchema>,
+  user: UserSessionType,
+) {
+  await db
+    .update(audioTable)
+    .set({ ...data })
+    .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)));
 }

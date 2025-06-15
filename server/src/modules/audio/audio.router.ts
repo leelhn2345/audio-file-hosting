@@ -6,6 +6,7 @@ import {
   AudioPaginationSchema,
   AudioTableSchema,
   PostAudioSchema,
+  PutAudioSchema,
 } from "./audio.schema.js";
 
 import { allDataSchemaExtender } from "@utils/schema.js";
@@ -16,6 +17,7 @@ import {
   getAllAudios,
   getAudio,
   postAudio,
+  putAudio,
 } from "./audio.service.js";
 
 const tags = ["audio"];
@@ -78,12 +80,17 @@ export async function audioRouter(server: FastifyInstance) {
     schema: {
       tags,
       params: t.Object({ audioId: t.String({ format: "uuid" }) }),
+      body: PutAudioSchema,
     },
     handler: async (
-      req: FastifyRequest<{ Params: { audioId: string } }>,
+      req: FastifyRequest<{
+        Params: { audioId: string };
+        Body: Static<typeof PutAudioSchema>;
+      }>,
       reply,
     ) => {
       const user = getUserSession(req);
+      await putAudio(req.params.audioId, req.body, user);
       reply.send({ message: "Audio successfully modified." });
     },
   });
