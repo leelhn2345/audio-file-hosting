@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 export async function register(data: unknown) {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/signup`, {
     method: "POST",
@@ -24,7 +26,27 @@ export async function login(data: unknown) {
 
   const result = await res.json();
   if (!res.ok) throw new Error(result.message);
+
+  await getUserJwt();
+
   return result;
+}
+
+export async function getUserJwt() {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/user-jwt`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  const result = await res.text();
+
+  if (!res.ok) throw new Error("Authentication error.");
+
+  Cookies.set("userProfile", result, {
+    sameSite: "strict",
+    secure: true,
+    expires: new Date(Date.now() + 60 * 60 * 1000), // 1 hour from now
+  });
 }
 
 export async function logout() {

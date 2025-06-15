@@ -1,6 +1,8 @@
 import { Button } from "@ui/button";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { isAuthenticated } from "@/utils/auth";
+import { logout } from "@/api/auth";
 
 type Props = {
   children: ReactNode;
@@ -15,12 +17,20 @@ export function Header({ children }: Props) {
       <div className="container mx-auto flex h-12 justify-between max-sm:px-2">
         {children}
         <div className="flex items-center gap-x-2">
-          <Button variant="outline" asChild>
-            <Link to="/login">Login</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/register">Register</Link>
-          </Button>
+          {isAuthenticated() ? (
+            <>
+              <Button variant="outline" asChild>
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/register">Register</Link>
+              </Button>
+            </>
+          ) : (
+            <Button variant="outline" onClick={logout}>
+              Logout
+            </Button>
+          )}
         </div>
       </div>
     </header>
