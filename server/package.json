@@ -2,11 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "main": "src/index.ts",
-  "type": "module",
   "engines": {
     "node": "22",
     "pnpm": ">=10"
   },
+  "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "tsx --watch -r dotenv-safe/config src/index.ts",
