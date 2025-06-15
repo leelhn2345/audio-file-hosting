@@ -47,7 +47,8 @@ function RouteComponent() {
   }
 
   return (
-    <main className="container mx-auto mt-10 flex justify-center">
+    <main className="container mx-auto mt-10 flex flex-col items-center">
+      <h1 className="mb-10 text-2xl font-bold">Registration</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-72 space-y-8">
           <FormField
