@@ -8,6 +8,13 @@
       "when": 1749918828345,
       "tag": "0000_init_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1749967947862,
+      "tag": "0001_audio_tables",
+      "breakpoints": true
     }
   ]
 }
