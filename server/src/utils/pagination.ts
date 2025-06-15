@@ -123,9 +123,9 @@ function getSortSQL(
  */
 export function generateTextSearchCondition(
   columns: AnyPgColumn[],
-  searchText?: string,
+  searchText?: string | null,
 ) {
-  if (!searchText) return sql`TRUE`;
+  if (!searchText || searchText === null) return sql`TRUE`;
 
   const weightLevels = ["A", "B", "C", "D"];
 
