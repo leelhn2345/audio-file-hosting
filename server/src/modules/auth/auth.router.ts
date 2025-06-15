@@ -28,7 +28,6 @@ export async function authRouter(server: FastifyInstance) {
     schema: {
       tags,
       body: LoginSchema,
-      response: { 200: t.Object({ name: t.String(), email: t.String() }) },
     },
     handler: async (
       req: FastifyRequest<{ Body: Static<typeof LoginSchema> }>,
@@ -36,7 +35,7 @@ export async function authRouter(server: FastifyInstance) {
     ) => {
       const data = await login(req.body);
       req.userSession.value = data;
-      reply.send(data);
+      reply.send({ message: "User successfully login." });
     },
   });
 

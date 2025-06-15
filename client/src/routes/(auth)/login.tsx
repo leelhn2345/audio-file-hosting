@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useSetAtom } from "jotai";
 import { userAtom } from "@stores/user";
 import { isAuthenticated } from "@/utils/auth";
+import { getUserData } from "@/api/user";
 
 const loginSchema = z.object({ email: z.string().optional() });
 
@@ -49,20 +50,26 @@ function RouteComponent() {
     },
   });
 
-  const { mutate } = useMutation({
+  const { mutate: loginMutation } = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => login(values),
-    onSuccess: (data) => {
-      toast.success("Successful login.");
+    onSuccess: () => {
       form.reset();
-      setUserAtom(data);
-      navigate({ to: "/" });
     },
-
     onError: (err) => toast.error(err.message),
   });
 
+  const { mutate: userMutation } = useMutation({
+    mutationFn: getUserData,
+    onSuccess: (data) => {
+      setUserAtom(data);
+      toast.success("Login success.");
+      navigate({ to: "/" });
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    mutate(values);
+    loginMutation(values);
+    userMutation();
   }
   return (
     <div className="mt-10 flex flex-col items-center">
