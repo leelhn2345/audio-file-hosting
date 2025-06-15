@@ -43,8 +43,11 @@ function RouteComponent() {
     mutationFn: (values: z.infer<typeof formSchema>) => register(values),
     onSuccess: (data) => {
       toast.success(data.message);
+      navigate({
+        to: "/login",
+        search: { email: form.getValues("email") },
+      });
       form.reset();
-      navigate({ to: "/login" });
     },
     onError: (err) => toast.error(err.message),
   });

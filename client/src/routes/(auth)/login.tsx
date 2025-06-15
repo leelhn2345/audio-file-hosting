@@ -12,35 +12,45 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "@/api/auth";
+import { toast } from "sonner";
+
+const loginSchema = z.object({ email: z.string().optional() });
 
 export const Route = createFileRoute("/(auth)/login")({
   component: RouteComponent,
+  validateSearch: loginSchema,
 });
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address format." }),
-  password: z
-    .string()
-    .min(12, "Password must be at least 12 characters long")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
-    ),
+  password: z.string().min(8),
 });
 
 function RouteComponent() {
+  const { email } = Route.useSearch();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email: email ?? "",
       password: "",
     },
   });
 
+  const { mutate } = useMutation({
+    mutationFn: (values: z.infer<typeof formSchema>) => login(values),
+    onSuccess: (data) => {
+      toast.success(data.message);
+      form.reset();
+    },
+
+    onError: (err) => toast.error(err.message),
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    mutate(values);
   }
   return (
     <div className="mt-10 flex flex-col items-center">

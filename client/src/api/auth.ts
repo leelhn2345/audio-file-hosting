@@ -5,15 +5,31 @@ export async function register(data: unknown) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   });
-  if (!res.ok) {
-    const errData = await res.json();
-    throw new Error(errData.message);
-  }
   const result = await res.json();
+  if (!res.ok) throw new Error(result.message);
   return result;
 }
 
-export async function login() {}
+export async function login(data: unknown) {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
 
-export async function logout() {}
+  const result = await res.json();
+  if (!res.ok) throw new Error(result.message);
+  return result;
+}
+
+export async function logout() {
+  await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+}
