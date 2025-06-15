@@ -19,6 +19,9 @@
   "dependencies": {
     "@tanstack/react-router": "^1.121.12",
     "@tanstack/react-start": "^1.121.13",
+    "prettier-plugin-classnames": "^0.7.9",
+    "prettier-plugin-merge": "^0.7.4",
+    "prettier-plugin-tailwindcss": "^0.6.12",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.3",
