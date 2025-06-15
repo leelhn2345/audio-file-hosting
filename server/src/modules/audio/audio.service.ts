@@ -20,6 +20,7 @@ export async function getAllAudios(
     [audioTable.name],
     pagination.textSearch,
   );
+
   const filter = and(textSearch, eq(audioTable.uploadedBy, user.id));
 
   const total = await db.$count(audioTable, filter);

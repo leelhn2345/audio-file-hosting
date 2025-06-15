@@ -43,3 +43,19 @@ export const FileObjectSchema = t.Object({
 });
 
 export type FileObjectType = Static<typeof FileObjectSchema>;
+
+/**
+ * commonly used for paginated data
+ */
+export function allDataSchemaExtender<T extends TSchema>(
+  schema: T,
+  schemaOptions?: SchemaOptions,
+) {
+  return t.Object(
+    {
+      total: t.Number(),
+      data: t.Array(schema),
+    },
+    { ...schemaOptions },
+  );
+}

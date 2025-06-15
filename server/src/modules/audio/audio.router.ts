@@ -4,9 +4,10 @@ import { FastifyRequest } from "fastify/types/request.js";
 
 import { AudioPaginationSchema, AudioTableSchema } from "./audio.schema.js";
 
+import { allDataSchemaExtender } from "@utils/schema.js";
 import { getUserSession } from "@utils/session.js";
 
-import { deleteAudio, getAudio } from "./audio.service.js";
+import { deleteAudio, getAllAudios, getAudio } from "./audio.service.js";
 
 const tags = ["audio"];
 
@@ -15,11 +16,20 @@ export async function audioRouter(server: FastifyInstance) {
     schema: {
       tags,
       querystring: AudioPaginationSchema,
+      response: {
+        200: allDataSchemaExtender(AudioTableSchema),
+      },
     },
     handler: async (
-      req: FastifyRequest<{ Params: Static<typeof AudioPaginationSchema> }>,
+      req: FastifyRequest<{
+        Querystring: Static<typeof AudioPaginationSchema>;
+      }>,
       reply,
-    ) => {},
+    ) => {
+      const user = getUserSession(req);
+      const data = await getAllAudios(req.query, user);
+      reply.send(data);
+    },
   });
 
   server.get("/audio/:audioId", {
