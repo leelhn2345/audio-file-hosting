@@ -54,9 +54,11 @@ export function Header({ children }: Props) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-40">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuItem>
-                    <UserCog className="mr-2 h-4 w-4" />
-                    <span>Manage Profile</span>
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="flex">
+                      <UserCog className="mr-2 h-4 w-4" />
+                      <span>Manage Profile</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
