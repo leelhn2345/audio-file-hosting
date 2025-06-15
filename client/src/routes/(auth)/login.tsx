@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,38 +12,67 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "@/api/auth";
+import { toast } from "sonner";
+import { useSetAtom } from "jotai";
+import { userAtom } from "@stores/user";
+import { isAuthenticated } from "@/utils/auth";
+import { getUserData } from "@/api/user";
+
+const loginSchema = z.object({ email: z.string().optional() });
 
 export const Route = createFileRoute("/(auth)/login")({
   component: RouteComponent,
+  beforeLoad: () => {
+    if (isAuthenticated()) {
+      throw redirect({ to: "/" });
+    }
+  },
+  validateSearch: loginSchema,
 });
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address format." }),
-  password: z
-    .string()
-    .min(12, "Password must be at least 12 characters long")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
-    ),
+  password: z.string().min(8),
 });
 
 function RouteComponent() {
+  const { email } = Route.useSearch();
+  const setUserAtom = useSetAtom(userAtom);
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email: email ?? "",
       password: "",
     },
   });
 
+  const { mutate: loginMutation } = useMutation({
+    mutationFn: (values: z.infer<typeof formSchema>) => login(values),
+    onSuccess: () => {
+      form.reset();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const { mutate: userMutation } = useMutation({
+    mutationFn: getUserData,
+    onSuccess: (data) => {
+      setUserAtom(data);
+      toast.success("Login success.");
+      navigate({ to: "/" });
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    loginMutation(values);
+    userMutation();
   }
   return (
-    <main className="container mx-auto mt-10 flex flex-col items-center">
+    <div className="mt-10 flex flex-col items-center">
       <h1 className="mb-4 text-2xl font-bold">Login</h1>
       <p className="mb-6">Welcome back~</p>
 
@@ -78,6 +107,6 @@ function RouteComponent() {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
-    </main>
+    </div>
   );
 }

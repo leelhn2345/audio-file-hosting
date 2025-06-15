@@ -29,6 +29,9 @@
       "@ui/*": [
         "./src/components/ui/*"
       ],
+      "@stores/*": [
+        "./src/stores/*"
+      ],
       "@components/*": [
         "./src/components/*"
       ],

@@ -8,6 +8,8 @@ declare global {
 
       DATABASE_URL: string;
 
+      JWT_SECRET: string;
+
       SESSION_KEY: string;
       SESSION_SECRET: string;
 

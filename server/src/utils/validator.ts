@@ -71,8 +71,16 @@ export function setValidatorCompiler(server: FastifyInstance) {
     getValidatorCompiler(req as ValidatorCompilerRequest),
   );
 
-  // Set serializer compiler for response schemas  
-  server.setSerializerCompiler(() => {
-    return (data) => JSON.stringify(data);
+  // Set serializer compiler for response schemas
+  server.setSerializerCompiler(({ schema }) => {
+    // Use one of the existing compiled validators to avoid import issues
+    const ajv = schemaCompilers.body;
+    const validate = ajv.compile(schema);
+
+    return (data) => {
+      // validate() modifies data in-place when removeAdditional is true
+      validate(data);
+      return JSON.stringify(data);
+    };
   });
 }

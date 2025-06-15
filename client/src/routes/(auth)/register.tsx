@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -13,24 +13,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
+import { register } from "@/api/auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/(auth)/register")({
   component: RouteComponent,
+  params: {},
 });
 
 const formSchema = z.object({
   name: z.string().nonempty(),
   email: z.string().email({ message: "Invalid email address format." }),
-  password: z
-    .string()
-    .min(12, "Password must be at least 12 characters long")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
-    ),
+  password: z.string().min(8),
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,14 +39,25 @@ function RouteComponent() {
     },
   });
 
+  const { mutate } = useMutation({
+    mutationFn: (values: z.infer<typeof formSchema>) => register(values),
+    onSuccess: (data) => {
+      toast.success(data.message);
+      navigate({
+        to: "/login",
+        search: { email: form.getValues("email") },
+      });
+      form.reset();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    mutate(values);
   }
 
   return (
-    <main className="container mx-auto mt-10 flex flex-col items-center">
+    <div className="mt-10 flex flex-col items-center">
       <h1 className="mb-10 text-2xl font-bold">Registration</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-72 space-y-8">
@@ -93,6 +103,6 @@ function RouteComponent() {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
-    </main>
+    </div>
   );
 }
