@@ -1,11 +1,11 @@
 import { atomWithStorage } from "jotai/utils";
 
-type User = {
+export interface UserData {
   name: string;
   email: string;
-};
+}
 
-export const userAtom = atomWithStorage<User | undefined>(
+export const userAtom = atomWithStorage<UserData | undefined>(
   "userSession",
   undefined,
 );
