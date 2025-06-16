@@ -24,6 +24,9 @@ import {
 } from "lucide-react";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@stores/user";
+import { cn } from "@/lib/utils";
+import type { ClassValue } from "clsx";
+import type { ReactNode } from "react";
 
 export const Route = createFileRoute("/about")({
   component: About,
@@ -278,136 +281,6 @@ function About() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="bg-gray-50 py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-gray-900 sm:text-4xl">
-              Meet Our Team
-            </h2>
-            <p className="mx-auto max-w-2xl text-lg text-gray-600">
-              The passionate individuals behind the platform
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="transition-shadow duration-300 hover:shadow-xl">
-              <CardContent className="p-8 text-center">
-                <Avatar className="mx-auto mb-4 h-20 w-20">
-                  <AvatarImage src="" alt="Alex Chen" />
-                  <AvatarFallback className="bg-gradient-to-br from-purple-400 to-purple-600 text-lg text-white">
-                    <Music className="h-10 w-10" />
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                  Alex Chen
-                </h3>
-                <p className="mb-3 text-purple-600">CEO & Co-Founder</p>
-                <p className="text-sm text-gray-600">
-                  Former music producer turned tech entrepreneur. 10+ years in
-                  audio technology and startup experience.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="transition-shadow duration-300 hover:shadow-xl">
-              <CardContent className="p-8 text-center">
-                <Avatar className="mx-auto mb-4 h-20 w-20">
-                  <AvatarImage src="" alt="Sarah Martinez" />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-400 to-blue-600 text-lg text-white">
-                    <Headphones className="h-10 w-10" />
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                  Sarah Martinez
-                </h3>
-                <p className="mb-3 text-blue-600">CTO & Co-Founder</p>
-                <p className="text-sm text-gray-600">
-                  Full-stack engineer with expertise in distributed systems and
-                  audio processing. Previously at Spotify.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="transition-shadow duration-300 hover:shadow-xl">
-              <CardContent className="p-8 text-center">
-                <Avatar className="mx-auto mb-4 h-20 w-20">
-                  <AvatarImage src="" alt="Marcus Johnson" />
-                  <AvatarFallback className="bg-gradient-to-br from-green-400 to-green-600 text-lg text-white">
-                    <Mic className="h-10 w-10" />
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                  Marcus Johnson
-                </h3>
-                <p className="mb-3 text-green-600">Head of Product</p>
-                <p className="text-sm text-gray-600">
-                  Podcaster and UX designer focused on creating intuitive
-                  experiences for content creators.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="transition-shadow duration-300 hover:shadow-xl">
-              <CardContent className="p-8 text-center">
-                <Avatar className="mx-auto mb-4 h-20 w-20">
-                  <AvatarImage src="" alt="Emily Rodriguez" />
-                  <AvatarFallback className="bg-gradient-to-br from-orange-400 to-orange-600 text-lg text-white">
-                    <Code className="h-10 w-10" />
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                  Emily Rodriguez
-                </h3>
-                <p className="mb-3 text-orange-600">Lead Developer</p>
-                <p className="text-sm text-gray-600">
-                  Frontend specialist with a passion for performance
-                  optimization and accessibility. Former Google engineer.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="transition-shadow duration-300 hover:shadow-xl">
-              <CardContent className="p-8 text-center">
-                <Avatar className="mx-auto mb-4 h-20 w-20">
-                  <AvatarImage src="" alt="David Kim" />
-                  <AvatarFallback className="bg-gradient-to-br from-pink-400 to-pink-600 text-lg text-white">
-                    <Settings className="h-10 w-10" />
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                  David Kim
-                </h3>
-                <p className="mb-3 text-pink-600">Head of Operations</p>
-                <p className="text-sm text-gray-600">
-                  Infrastructure and DevOps expert ensuring 99.9% uptime.
-                  Previously led platform operations at SoundCloud.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="transition-shadow duration-300 hover:shadow-xl">
-              <CardContent className="p-8 text-center">
-                <Avatar className="mx-auto mb-4 h-20 w-20">
-                  <AvatarImage src="" alt="Jessica Wu" />
-                  <AvatarFallback className="bg-gradient-to-br from-indigo-400 to-indigo-600 text-lg text-white">
-                    <BarChart3 className="h-10 w-10" />
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                  Jessica Wu
-                </h3>
-                <p className="mb-3 text-indigo-600">Head of Growth</p>
-                <p className="text-sm text-gray-600">
-                  Data-driven marketing strategist helping creators reach their
-                  audience. Former growth lead at Bandcamp.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
       {/* Achievements */}
       <section className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4">
@@ -470,6 +343,8 @@ function About() {
         </div>
       </section>
 
+      <Team />
+
       {/* CTA Section */}
       {!user && (
         <section className="bg-gradient-to-r from-purple-600 to-blue-600 py-20">
@@ -503,5 +378,121 @@ function About() {
         </section>
       )}
     </div>
+  );
+}
+
+const teamDescription: {
+  name: string;
+  title: string;
+  icon: ReactNode;
+  description: string;
+  colorFrom: ClassValue;
+  colorTo: ClassValue;
+  textColor: ClassValue;
+}[] = [
+  {
+    name: "Vera Lim",
+    title: "CEO & Co-Founder",
+    icon: <Music className="h-10 w-10" />,
+    description:
+      "Former music producer turned tech entrepreneur. 10+ years in audio technology and startup experience.",
+    colorFrom: "from-purple-400",
+    colorTo: "to-purple-600",
+    textColor: "text-purple-600",
+  },
+  {
+    name: "Albert Leng",
+    title: "CTO & Co-Founder",
+    description:
+      "Full-stack engineer with expertise in distributed systems and audio processing. Previously at Spotify.",
+    icon: <Headphones className="h-10 w-10" />,
+    colorFrom: "from-blue-400",
+    colorTo: "to-blue-600",
+    textColor: "text-blue-600",
+  },
+  {
+    name: "Zhang Tingbo",
+    title: "Head of Product",
+    description:
+      "Podcaster and UX designer focused on creating intuitive experiences for content creators.",
+    icon: <Mic className="h-10 w-10" />,
+    colorFrom: "from-green-400",
+    colorTo: "to-green-600",
+    textColor: "text-green-600",
+  },
+  {
+    name: "Decki Kwok",
+    title: "Lead Developer",
+    description:
+      "Full-stack engineer with expertise in distributed systems and audio processing. Previously at Spotify.",
+    icon: <Code className="h-10 w-10" />,
+    colorFrom: "from-orange-400",
+    colorTo: "to-orange-600",
+    textColor: "text-orange-600",
+  },
+  {
+    name: "Donny Su",
+    title: "Head of Operations",
+    description:
+      "Infrastructure and DevOps expert ensuring 99.9% uptime. Previously led platform operations at SoundCloud.",
+    icon: <Settings className="h-10 w-10" />,
+    colorFrom: "from-pink-400",
+    colorTo: "to-pink-600",
+    textColor: "text-pink-600",
+  },
+  {
+    name: "Samantha Wong",
+    title: "Head of Growth",
+    description:
+      "Data-driven marketing strategist helping creators reach their audience. Former growth lead at Bandcamp.",
+    icon: <BarChart3 className="h-10 w-10" />,
+    colorFrom: "from-indigo-400",
+    colorTo: "to-indigo-600",
+    textColor: "text-indigo-600",
+  },
+];
+
+function Team() {
+  return (
+    <section className="bg-gray-50 py-20">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="mb-16 text-center">
+          <h2 className="mb-4 text-3xl font-bold text-gray-900 sm:text-4xl">
+            Meet Our Team
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-gray-600">
+            The passionate individuals behind the platform
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {teamDescription.map((x) => (
+            <Card
+              key={x.name}
+              className="transition-shadow duration-300 hover:shadow-xl"
+            >
+              <CardContent className="p-8 text-center">
+                <Avatar className="mx-auto mb-4 h-20 w-20">
+                  <AvatarImage src="" alt={`${x.name}`} />
+                  <AvatarFallback
+                    className={cn("bg-gradient-to-br text-lg text-white", [
+                      x.colorFrom,
+                      x.colorTo,
+                    ])}
+                  >
+                    {x.icon}
+                  </AvatarFallback>
+                </Avatar>
+                <h3 className="mb-2 text-xl font-semibold text-gray-900">
+                  {x.name}
+                </h3>
+                <p className={cn("mb-3", x.textColor)}>{x.title}</p>
+                <p className="text-sm text-gray-600">{x.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

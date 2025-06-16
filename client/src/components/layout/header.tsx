@@ -80,7 +80,11 @@ export function Header({ children }: Props) {
                   variant="ghost"
                   className="h-10 w-10 rounded-full p-0 hover:bg-purple-50"
                 >
-                  <UserRound className="h-5 w-5 text-purple-600" />
+                  <UserRound
+                    className="text-purple-600"
+                    height={10}
+                    width={10}
+                  />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="mt-2 w-48">

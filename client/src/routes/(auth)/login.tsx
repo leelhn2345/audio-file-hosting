@@ -1,8 +1,8 @@
 import {
   createFileRoute,
+  Link,
   redirect,
   useNavigate,
-  Link,
 } from "@tanstack/react-router";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
