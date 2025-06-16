@@ -83,7 +83,7 @@ function About() {
               </h2>
               <div className="space-y-4 leading-relaxed text-gray-600">
                 <p>
-                  Founded in 2025, our platform was born from a simple
+                  Founded in 2024, our platform was born from a simple
                   frustration: existing audio hosting solutions were either too
                   expensive, too complicated, or simply didn't meet the needs of
                   modern creators.
@@ -391,7 +391,7 @@ const teamDescription: {
   textColor: ClassValue;
 }[] = [
   {
-    name: "Vera Lim",
+    name: "Person A",
     title: "CEO & Co-Founder",
     icon: <Music className="h-10 w-10" />,
     description:
@@ -401,7 +401,7 @@ const teamDescription: {
     textColor: "text-purple-600",
   },
   {
-    name: "Albert Leng",
+    name: "Person B",
     title: "CTO & Co-Founder",
     description:
       "Full-stack engineer with expertise in distributed systems and audio processing. Previously at Spotify.",
@@ -411,7 +411,7 @@ const teamDescription: {
     textColor: "text-blue-600",
   },
   {
-    name: "Zhang Tingbo",
+    name: "Person C",
     title: "Head of Product",
     description:
       "Podcaster and UX designer focused on creating intuitive experiences for content creators.",
@@ -421,7 +421,7 @@ const teamDescription: {
     textColor: "text-green-600",
   },
   {
-    name: "Decki Kwok",
+    name: "Person D",
     title: "Lead Developer",
     description:
       "Full-stack engineer with expertise in distributed systems and audio processing. Previously at Spotify.",
@@ -431,7 +431,7 @@ const teamDescription: {
     textColor: "text-orange-600",
   },
   {
-    name: "Donny Su",
+    name: "Person E",
     title: "Head of Operations",
     description:
       "Infrastructure and DevOps expert ensuring 99.9% uptime. Previously led platform operations at SoundCloud.",
@@ -441,7 +441,7 @@ const teamDescription: {
     textColor: "text-pink-600",
   },
   {
-    name: "Samantha Wong",
+    name: "Person F",
     title: "Head of Growth",
     description:
       "Data-driven marketing strategist helping creators reach their audience. Former growth lead at Bandcamp.",

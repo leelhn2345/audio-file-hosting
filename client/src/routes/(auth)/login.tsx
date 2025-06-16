@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import { useSetAtom } from "jotai";
 import { userAtom } from "@stores/user";
 import { isAuthenticated } from "@/utils/auth";
-import { getUserData } from "@/api/user";
+import { getUser } from "@/api/user";
 import { LogIn, ArrowRight } from "lucide-react";
 
 const loginSchema = z.object({ email: z.string().optional() });
@@ -67,7 +67,7 @@ function RouteComponent() {
   });
 
   const { mutate: userMutation } = useMutation({
-    mutationFn: getUserData,
+    mutationFn: getUser,
     onSuccess: (data) => {
       setUserAtom(data);
       toast.success("Login success.");

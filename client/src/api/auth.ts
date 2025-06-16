@@ -31,7 +31,7 @@ export async function login(data: unknown) {
   return result;
 }
 
-async function getUserJwt() {
+export async function getUserJwt() {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/user-jwt`, {
     method: "POST",
     credentials: "include",
