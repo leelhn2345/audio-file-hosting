@@ -187,7 +187,14 @@ function RouteComponent() {
                 </div>
                 <div className="flex flex-col gap-3">
                   <Button
-                    onClick={() => setIsEditing(true)}
+                    onClick={() => {
+                      // Reset form with current user values when entering edit mode
+                      form.reset({
+                        name: user.name || "",
+                        email: user.email || "",
+                      });
+                      setIsEditing(true);
+                    }}
                     className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white
                       hover:from-purple-700 hover:to-blue-700"
                   >
