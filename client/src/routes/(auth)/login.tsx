@@ -130,6 +130,7 @@ function RouteComponent() {
                           type="email"
                           placeholder="john@example.com"
                           className="h-11 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                          autoComplete="username"
                           {...field}
                         />
                       </FormControl>

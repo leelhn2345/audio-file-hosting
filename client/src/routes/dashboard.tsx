@@ -4,7 +4,8 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
   beforeLoad: () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated()) {
+      console.log(" hello ");
       throw redirect({ to: "/register" });
     }
   },
