@@ -40,6 +40,7 @@ import {
   Trash2,
   AlertTriangle,
 } from "lucide-react";
+import { deleteUser, putUser } from "@/api/user";
 
 export const Route = createFileRoute("/(auth)/profile")({
   component: RouteComponent,
@@ -57,19 +58,6 @@ const profileSchema = z.object({
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
-// Mock API functions - replace with actual API calls
-const updateProfile = async (data: ProfileFormData) => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return { success: true, message: "Profile updated successfully" };
-};
-
-const deleteAccount = async () => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return { success: true, message: "Account deleted successfully" };
-};
-
 function RouteComponent() {
   const [user, setUser] = useAtom(userAtom);
   const [isEditing, setIsEditing] = useState(false);
@@ -84,7 +72,7 @@ function RouteComponent() {
   });
 
   const { mutate: updateProfileMutation, isPending: isUpdating } = useMutation({
-    mutationFn: updateProfile,
+    mutationFn: putUser,
     onSuccess: () => {
       toast.success("Profile updated successfully!");
       setIsEditing(false);
@@ -98,7 +86,7 @@ function RouteComponent() {
   });
 
   const { mutate: deleteAccountMutation, isPending: isDeleting } = useMutation({
-    mutationFn: deleteAccount,
+    mutationFn: deleteUser,
     onSuccess: () => {
       toast.success("Account deleted successfully.");
       setUser(undefined);
@@ -216,7 +204,7 @@ function RouteComponent() {
                           Delete Account
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                          <span className="block mb-3">
+                          <span className="mb-3 block">
                             Are you absolutely sure you want to delete your
                             account?
                           </span>
