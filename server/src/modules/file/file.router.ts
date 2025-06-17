@@ -28,15 +28,20 @@ export async function fileRouter(server: FastifyInstance) {
     },
     handler: async (
       req: FastifyRequest<{
-        Body: { bucket: Static<typeof BucketSchema>; fileName: string };
+        Body: {
+          bucket: Static<typeof BucketSchema>;
+          fileName: string;
+          fileSize: number;
+        };
       }>,
       reply,
     ) => {
       const user = getUserSession(req);
-      const { bucket, fileName } = req.body;
+      const { bucket, fileName, fileSize } = req.body;
       const { fileObject, presignedUrl } = await postPresignedUrl(
         bucket,
         fileName,
+        fileSize,
         user,
       );
       reply.send({ fileObject, presignedUrl });

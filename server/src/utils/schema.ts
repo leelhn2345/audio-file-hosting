@@ -40,6 +40,7 @@ export function stringEnum<T extends string[]>(
 export const FileObjectSchema = t.Object({
   bucket: stringEnum(Object.values(Buckets)),
   objectKey: t.String(),
+  fileSize: t.Number(),
 });
 
 export type FileObjectType = Static<typeof FileObjectSchema>;

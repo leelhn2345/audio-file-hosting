@@ -9,4 +9,5 @@ export const BucketSchema = stringEnum(Object.values(Buckets));
 export const UploadUrlSchema = t.Object({
   bucket: BucketSchema,
   fileName: t.String(),
+  fileSize: t.Number(),
 });
