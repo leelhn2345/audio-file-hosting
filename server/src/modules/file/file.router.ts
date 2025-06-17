@@ -18,6 +18,7 @@ export async function fileRouter(server: FastifyInstance) {
       body: t.Object({
         bucket: BucketSchema,
         fileName: t.String(),
+        fileSize: t.Number(),
       }),
       response: {
         200: t.Object({
@@ -28,15 +29,20 @@ export async function fileRouter(server: FastifyInstance) {
     },
     handler: async (
       req: FastifyRequest<{
-        Body: { bucket: Static<typeof BucketSchema>; fileName: string };
+        Body: {
+          bucket: Static<typeof BucketSchema>;
+          fileName: string;
+          fileSize: number;
+        };
       }>,
       reply,
     ) => {
       const user = getUserSession(req);
-      const { bucket, fileName } = req.body;
+      const { bucket, fileName, fileSize } = req.body;
       const { fileObject, presignedUrl } = await postPresignedUrl(
         bucket,
         fileName,
+        fileSize,
         user,
       );
       reply.send({ fileObject, presignedUrl });
@@ -46,7 +52,8 @@ export async function fileRouter(server: FastifyInstance) {
   server.get("/file/download-url", {
     schema: {
       tags,
-      querystring: FileObjectSchema,
+      querystring: t.Omit(FileObjectSchema, ["fileSize"]),
+      response: { 200: t.Object({ presignedUrl: t.String() }) },
     },
     handler: async (
       req: FastifyRequest<{ Querystring: Static<typeof FileObjectSchema> }>,

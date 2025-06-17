@@ -21,6 +21,7 @@ async function checkIfObjectExists(bucket: Buckets, objectKey: string) {
 export async function postPresignedUrl(
   bucket: Buckets,
   fileName: string,
+  fileSize: number,
   user: UserSessionType,
 ) {
   const userId = user.id;
@@ -38,7 +39,7 @@ export async function postPresignedUrl(
     objectKey,
     presignExpiryDuration,
   );
-  const fileObject = { bucket, objectKey };
+  const fileObject = { bucket, objectKey, fileSize };
   return { fileObject, presignedUrl };
 }
 

@@ -169,6 +169,16 @@ export function Header({ children }: Props) {
                   >
                     About
                   </Link>
+                  {user && (
+                    <Link
+                      to="/audios"
+                      className="rounded-lg px-4 py-2 text-lg font-medium text-gray-700 transition-all
+                        hover:bg-purple-50 hover:text-purple-600"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Audios
+                    </Link>
+                  )}
                 </nav>
 
                 {/* Mobile Actions */}

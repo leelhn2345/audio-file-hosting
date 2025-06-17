@@ -4,10 +4,12 @@ import { type NavBarNavigation, NavBar } from "@components/layout/navbar";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { NotFound } from "@components/not-found";
+import { ErrorComponent } from "@components/error";
 
 const tabs: NavBarNavigation = [
   { href: "/", title: "Home" },
   { href: "/about", title: "About" },
+  { href: "/audios", title: "Audios", authNeeded: true },
 ];
 
 export const Route = createRootRoute({
@@ -24,4 +26,5 @@ export const Route = createRootRoute({
     </div>
   ),
   notFoundComponent: NotFound,
+  errorComponent: ErrorComponent,
 });

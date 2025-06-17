@@ -1,6 +1,8 @@
 import { Static } from "@sinclair/typebox";
 import { randomUUID } from "crypto";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
+
+import { minioClient } from "@config/minio.js";
 
 import { db } from "@db/index.js";
 import { audioTable } from "@db/tables/audio.table.js";
@@ -40,22 +42,41 @@ export async function getAllAudios(
     .limit(pagination.limit ?? 10)
     .offset(pagination.offset ?? 0);
 
-  return { total, data };
+  const totalFileSize = await db
+    .select({
+      totalFileSize: sql<number>`SUM((${audioTable.fileObject}->>'fileSize')::numeric)`,
+    })
+    .from(audioTable)
+    .where(filter)
+    .then((x) => x[0].totalFileSize);
+
+  return { total, data, totalFileSize };
 }
 
 export async function getAudio(audioId: string, user: UserSessionType) {
   const data = await db
     .select()
     .from(audioTable)
-    .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)));
+    .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)))
+    .then((x) => x[0]);
 
   return data;
 }
 
 export async function deleteAudio(audioId: string, user: UserSessionType) {
-  await db
+  const deletedAudioArray = await db
     .delete(audioTable)
-    .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)));
+    .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)))
+    .returning();
+
+  if (deletedAudioArray.length === 0) return;
+
+  const deletedAudio = deletedAudioArray[0];
+
+  await minioClient.removeObject(
+    deletedAudio.fileObject.bucket,
+    deletedAudio.fileObject.objectKey,
+  );
 }
 
 export async function postAudio(
