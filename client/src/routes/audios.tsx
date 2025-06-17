@@ -34,7 +34,6 @@ import {
   Music,
   Play,
   Download,
-  Share2,
   Trash2,
   Plus,
   Calendar,
@@ -42,7 +41,7 @@ import {
 } from "lucide-react";
 import { UploadDialog } from "@/components/upload-dialog";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/audios")({
   component: RouteComponent,
   beforeLoad: () => {
     if (!isAuthenticated()) {
@@ -57,7 +56,7 @@ function RouteComponent() {
   const toTitleCase = (str: string) => {
     return str.replace(
       /\w\S*/g,
-      (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(),
+      (txt) => txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase(),
     );
   };
 
@@ -318,7 +317,7 @@ function RouteComponent() {
                     <TableRow>
                       <TableHead>Name</TableHead>
                       <TableHead>Artist</TableHead>
-                      <TableHead>Duration</TableHead>
+                      {/* <TableHead>Duration</TableHead> */}
                       <TableHead>Size</TableHead>
                       <TableHead>Uploaded</TableHead>
                       <TableHead>Actions</TableHead>
@@ -354,9 +353,9 @@ function RouteComponent() {
                             <span className="text-gray-400">-</span>
                           )}
                         </TableCell>
-                        <TableCell>
-                          <span className="text-gray-500">-</span>
-                        </TableCell>
+                        {/* <TableCell> */}
+                        {/*   <span className="text-gray-500">-</span> */}
+                        {/* </TableCell> */}
                         <TableCell>
                           <span className="text-sm text-gray-600">
                             {audio.fileObject?.fileSize
@@ -409,7 +408,7 @@ function RouteComponent() {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction 
+                                  <AlertDialogAction
                                     onClick={() => removeAudio(audio.id)}
                                     disabled={isDeleting}
                                     className="bg-red-600 hover:bg-red-700"
