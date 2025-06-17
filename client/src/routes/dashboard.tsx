@@ -1,9 +1,11 @@
 import { isAuthenticated } from "@/utils/auth";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@stores/user";
-import { getAudios } from "@/api/audio";
+import { getAudios, deleteAudio, type Audio } from "@/api/audio";
+import { generateDownloadUrl, type DownloadFileObject } from "@/api/file";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -58,6 +60,59 @@ function RouteComponent() {
       (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(),
     );
   };
+
+  const { mutate: downloadAudio, isPending: isDownloading } = useMutation({
+    mutationFn: async (audio: Audio) => {
+      const downloadFileObject: DownloadFileObject = {
+        bucket: audio.fileObject.bucket,
+        objectKey: audio.fileObject.objectKey,
+      };
+
+      const presignedUrl = await generateDownloadUrl(downloadFileObject);
+
+      // Fetch the file as a blob to force download in all browsers
+      const response = await fetch(presignedUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch file: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+
+      // Create blob URL and download link
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = audio.name || "audio-file";
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+
+      return presignedUrl;
+    },
+    onSuccess: () => {
+      toast.success("Download started successfully!");
+    },
+    onError: (error: Error) => {
+      toast.error(`Download failed: ${error.message}`);
+    },
+  });
+
+  const { mutate: removeAudio, isPending: isDeleting } = useMutation({
+    mutationFn: async (audioId: string) => {
+      return await deleteAudio(audioId);
+    },
+    onSuccess: () => {
+      toast.success("Audio file deleted successfully!");
+      // Refresh the audio list
+      refetch();
+    },
+    onError: (error: Error) => {
+      toast.error(`Delete failed: ${error.message}`);
+    },
+  });
 
   const {
     data: audioData,
@@ -320,12 +375,18 @@ function RouteComponent() {
                             <Button variant="ghost" size="sm">
                               <Play className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="sm">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => downloadAudio(audio)}
+                              disabled={isDownloading}
+                              title="Download file"
+                            >
                               <Download className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="sm">
-                              <Share2 className="h-4 w-4" />
-                            </Button>
+                            {/* <Button variant="ghost" size="sm"> */}
+                            {/*   <Share2 className="h-4 w-4" /> */}
+                            {/* </Button> */}
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button
@@ -348,8 +409,12 @@ function RouteComponent() {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction className="bg-red-600 hover:bg-red-700">
-                                    Delete
+                                  <AlertDialogAction 
+                                    onClick={() => removeAudio(audio.id)}
+                                    disabled={isDeleting}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    {isDeleting ? "Deleting..." : "Delete"}
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
                               </AlertDialogContent>

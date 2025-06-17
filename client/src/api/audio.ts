@@ -68,9 +68,6 @@ export async function deleteAudio(audioId: string) {
     `${import.meta.env.VITE_BACKEND_URL}/audio/${audioId}`,
     {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
       credentials: "include",
     },
   );

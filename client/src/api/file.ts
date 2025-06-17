@@ -1,5 +1,3 @@
-import { URLSearchParams } from "url";
-
 export enum Bucket {
   AUDIO = "audio",
 }
