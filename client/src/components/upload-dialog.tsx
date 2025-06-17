@@ -60,15 +60,13 @@ const uploadAudio = async (
 
   const uploadFileObject = {
     bucket: Bucket.AUDIO,
-    fileName: metadata.name,
+    fileName: file.name,
     fileSize: file.size,
   };
 
   const { presignedUrl, fileObject } =
     await generateUploadUrl(uploadFileObject);
   onProgress?.(20);
-
-  console.log(presignedUrl);
 
   // Step 2: Upload file to presigned URL
   const formData = new FormData();
@@ -413,4 +411,3 @@ export function UploadDialog({ children }: UploadDialogProps) {
     </Dialog>
   );
 }
-

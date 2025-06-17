@@ -122,13 +122,12 @@ function RouteComponent() {
   } = useQuery({
     queryKey: ["audios"],
     queryFn: getAudios,
+    initialData: { data: [], total: 0, totalFileSize: 0 },
   });
 
-  if (!audioData || isPending) {
-    return <div>spinner here</div>;
-  }
-
-  const { data: audios, total } = audioData;
+  // if (!audioData || isPending) {
+  //   return <div>spinner here</div>;
+  // }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -208,7 +207,11 @@ function RouteComponent() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-gray-900">
-                  {isPending ? <Skeleton className="h-8 w-16" /> : total}
+                  {isPending ? (
+                    <Skeleton className="h-8 w-16" />
+                  ) : (
+                    audioData.total
+                  )}
                 </div>
                 <p className="mt-1 text-xs text-gray-500">Files uploaded</p>
               </CardContent>
@@ -249,7 +252,7 @@ function RouteComponent() {
                   {isPending ? (
                     <Skeleton className="h-8 w-12" />
                   ) : (
-                    audios.filter(
+                    audioData.data.filter(
                       (audio) =>
                         new Date(audio.createdAt) >
                         new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
@@ -293,7 +296,7 @@ function RouteComponent() {
                     </div>
                   ))}
                 </div>
-              ) : audios.length === 0 ? (
+              ) : audioData.data.length === 0 ? (
                 <div className="py-12 text-center">
                   <FileAudio className="mx-auto mb-4 h-12 w-12 text-gray-400" />
                   <h3 className="mb-2 text-lg font-semibold text-gray-900">
@@ -324,7 +327,7 @@ function RouteComponent() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {audios.map((audio) => (
+                    {audioData.data.map((audio) => (
                       <TableRow key={audio.id} className="hover:bg-gray-50">
                         <TableCell>
                           <div className="flex items-center space-x-3">
@@ -372,10 +375,6 @@ function RouteComponent() {
                               variant="ghost"
                               size="sm"
                               onClick={() => {
-                                console.log(
-                                  "Navigating to:",
-                                  `/audios/${audio.id}`,
-                                );
                                 navigate({
                                   to: "/audios/$audioId",
                                   params: { audioId: audio.id },
