@@ -1,5 +1,5 @@
 import { isAuthenticated } from "@/utils/auth";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@stores/user";
@@ -41,7 +41,7 @@ import {
 } from "lucide-react";
 import { UploadDialog } from "@/components/upload-dialog";
 
-export const Route = createFileRoute("/audios")({
+export const Route = createFileRoute("/audios/")({
   component: RouteComponent,
   beforeLoad: () => {
     if (!isAuthenticated()) {
@@ -52,6 +52,7 @@ export const Route = createFileRoute("/audios")({
 
 function RouteComponent() {
   const user = useAtomValue(userAtom);
+  const navigate = useNavigate();
 
   const toTitleCase = (str: string) => {
     return str.replace(
@@ -317,7 +318,6 @@ function RouteComponent() {
                     <TableRow>
                       <TableHead>Name</TableHead>
                       <TableHead>Artist</TableHead>
-                      {/* <TableHead>Duration</TableHead> */}
                       <TableHead>Size</TableHead>
                       <TableHead>Uploaded</TableHead>
                       <TableHead>Actions</TableHead>
@@ -353,9 +353,6 @@ function RouteComponent() {
                             <span className="text-gray-400">-</span>
                           )}
                         </TableCell>
-                        {/* <TableCell> */}
-                        {/*   <span className="text-gray-500">-</span> */}
-                        {/* </TableCell> */}
                         <TableCell>
                           <span className="text-sm text-gray-600">
                             {audio.fileObject?.fileSize
@@ -371,7 +368,20 @@ function RouteComponent() {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">
-                            <Button variant="ghost" size="sm">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                console.log(
+                                  "Navigating to:",
+                                  `/audios/${audio.id}`,
+                                );
+                                navigate({
+                                  to: "/audios/$audioId",
+                                  params: { audioId: audio.id },
+                                });
+                              }}
+                            >
                               <Play className="h-4 w-4" />
                             </Button>
                             <Button
@@ -383,9 +393,6 @@ function RouteComponent() {
                             >
                               <Download className="h-4 w-4" />
                             </Button>
-                            {/* <Button variant="ghost" size="sm"> */}
-                            {/*   <Share2 className="h-4 w-4" /> */}
-                            {/* </Button> */}
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button
