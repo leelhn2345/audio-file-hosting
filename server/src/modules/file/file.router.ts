@@ -47,6 +47,7 @@ export async function fileRouter(server: FastifyInstance) {
     schema: {
       tags,
       querystring: FileObjectSchema,
+      response: { 200: t.Object({ presignedUrl: t.String() }) },
     },
     handler: async (
       req: FastifyRequest<{ Querystring: Static<typeof FileObjectSchema> }>,

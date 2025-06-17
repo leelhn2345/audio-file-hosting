@@ -1,6 +1,8 @@
+import type { FileObject } from "./file";
+
 export interface NewAudio {
   name: string;
-  fileObject: { bucket: string; objectKey: string };
+  fileObject: FileObject;
   description?: string;
   artist?: string;
   releaseDate?: string;
