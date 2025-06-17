@@ -15,7 +15,7 @@ export interface Audio extends NewAudio {
   updatedAt: string;
 }
 
-export async function getAudios(): Promise<Audio[]> {
+export async function getAudios(): Promise<{ total: number; data: Audio[] }> {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/audios`, {
     headers: {
       "Content-Type": "application/json",

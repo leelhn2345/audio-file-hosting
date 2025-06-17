@@ -5,6 +5,7 @@ export enum Bucket {
 export type FileObject = {
   bucket: Bucket;
   objectKey: string;
+  size: number;
 };
 
 export async function generateUploadUrl(fileObject: FileObject) {
@@ -26,7 +27,7 @@ export async function generateUploadUrl(fileObject: FileObject) {
 }
 
 export async function generateDownloadUrl(fileObject: FileObject) {
-  const searchParams = new URLSearchParams(fileObject);
+  const searchParams = new URLSearchParams({});
 
   const res = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/file/download-url?${searchParams}`,
