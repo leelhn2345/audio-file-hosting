@@ -15,7 +15,11 @@ export interface Audio extends NewAudio {
   updatedAt: string;
 }
 
-export async function getAudios(): Promise<{ total: number; data: Audio[] }> {
+export async function getAudios(): Promise<{
+  total: number;
+  data: Audio[];
+  totalFileSize: number;
+}> {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/audios`, {
     headers: {
       "Content-Type": "application/json",
@@ -28,47 +32,56 @@ export async function getAudios(): Promise<{ total: number; data: Audio[] }> {
 }
 
 export async function getAudio(audioId: string): Promise<Audio> {
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${audioId}`, {
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/audio/${audioId}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
     },
-    credentials: "include",
-  });
+  );
   const result = await res.json();
   if (!res.ok) throw new Error(result.message);
   return result;
 }
 
 export async function putAudio(audioId: string, audioData: NewAudio) {
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${audioId}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/audio/${audioId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(audioData),
+      credentials: "include",
     },
-    body: JSON.stringify(audioData),
-    credentials: "include",
-  });
+  );
   const result = await res.json();
   if (!res.ok) throw new Error(result.message);
   return result;
 }
 
 export async function deleteAudio(audioId: string) {
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${audioId}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/audio/${audioId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
     },
-    credentials: "include",
-  });
+  );
   const result = await res.json();
   if (!res.ok) throw new Error(result.message);
   return result;
 }
 
-export async function postAudio(audioId: string, audioData: NewAudio) {
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${audioId}`, {
-    method: "PUT",
+export async function postAudio(audioData: NewAudio) {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/audio`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },

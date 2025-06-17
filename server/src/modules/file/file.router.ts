@@ -18,6 +18,7 @@ export async function fileRouter(server: FastifyInstance) {
       body: t.Object({
         bucket: BucketSchema,
         fileName: t.String(),
+        fileSize: t.Number(),
       }),
       response: {
         200: t.Object({
@@ -51,7 +52,7 @@ export async function fileRouter(server: FastifyInstance) {
   server.get("/file/download-url", {
     schema: {
       tags,
-      querystring: FileObjectSchema,
+      querystring: t.Omit(FileObjectSchema, ["fileSize"]),
       response: { 200: t.Object({ presignedUrl: t.String() }) },
     },
     handler: async (

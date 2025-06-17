@@ -28,7 +28,10 @@ export async function audioRouter(server: FastifyInstance) {
       tags,
       querystring: AudioPaginationSchema,
       response: {
-        200: allDataSchemaExtender(AudioTableSchema),
+        200: t.Composite([
+          allDataSchemaExtender(AudioTableSchema),
+          t.Object({ totalFileSize: t.Number() }),
+        ]),
       },
     },
     handler: async (

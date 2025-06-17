@@ -3,8 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@stores/user";
-import { getAudios, type Audio } from "@/api/audio";
-import { useState } from "react";
+import { getAudios } from "@/api/audio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +38,7 @@ import {
   Calendar,
   FileAudio,
 } from "lucide-react";
+import { UploadDialog } from "@/components/upload-dialog";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
@@ -51,7 +51,13 @@ export const Route = createFileRoute("/dashboard")({
 
 function RouteComponent() {
   const user = useAtomValue(userAtom);
-  const [selectedAudio, setSelectedAudio] = useState<Audio | null>(null);
+
+  const toTitleCase = (str: string) => {
+    return str.replace(
+      /\w\S*/g,
+      (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(),
+    );
+  };
 
   const {
     data: audioData,
@@ -129,7 +135,7 @@ function RouteComponent() {
           {/* Header Section */}
           <div className="text-center">
             <h1 className="mb-2 text-3xl font-bold text-gray-900">
-              Welcome back, {user?.name}!
+              Welcome back, {user?.name ? toTitleCase(user.name) : ""}!
             </h1>
             <p className="text-gray-600">Manage and share your audio content</p>
           </div>
@@ -167,12 +173,7 @@ function RouteComponent() {
                   {isPending ? (
                     <Skeleton className="h-8 w-20" />
                   ) : (
-                    formatFileSize(
-                      audios.reduce(
-                        (total, audio) => total + (audio.fileObject?.size || 0),
-                        0,
-                      ),
-                    )
+                    formatFileSize(audioData.totalFileSize)
                   )}
                 </div>
                 <p className="mt-1 text-xs text-gray-500">Total file size</p>
@@ -212,13 +213,15 @@ function RouteComponent() {
                 <CardTitle className="text-xl font-semibold text-gray-900">
                   Your Audio Files
                 </CardTitle>
-                <Button
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700
-                    hover:to-blue-700"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Upload New
-                </Button>
+                <UploadDialog>
+                  <Button
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700
+                      hover:to-blue-700"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Upload New
+                  </Button>
+                </UploadDialog>
               </div>
             </CardHeader>
             <CardContent>
@@ -244,13 +247,15 @@ function RouteComponent() {
                   <p className="mb-6 text-gray-600">
                     Upload your first audio file to get started
                   </p>
-                  <Button
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700
-                      hover:to-blue-700"
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    Upload Your First File
-                  </Button>
+                  <UploadDialog>
+                    <Button
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700
+                        hover:to-blue-700"
+                    >
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload Your First File
+                    </Button>
+                  </UploadDialog>
                 </div>
               ) : (
                 <Table>
@@ -299,8 +304,8 @@ function RouteComponent() {
                         </TableCell>
                         <TableCell>
                           <span className="text-sm text-gray-600">
-                            {audio.fileObject?.size
-                              ? formatFileSize(audio.fileObject.size)
+                            {audio.fileObject?.fileSize
+                              ? formatFileSize(audio.fileObject.fileSize)
                               : "-"}
                           </span>
                         </TableCell>
