@@ -171,12 +171,12 @@ export function Header({ children }: Props) {
                   </Link>
                   {user && (
                     <Link
-                      to="/dashboard"
+                      to="/audios"
                       className="rounded-lg px-4 py-2 text-lg font-medium text-gray-700 transition-all
                         hover:bg-purple-50 hover:text-purple-600"
                       onClick={() => setIsOpen(false)}
                     >
-                      Dashboard
+                      Audios
                     </Link>
                   )}
                 </nav>

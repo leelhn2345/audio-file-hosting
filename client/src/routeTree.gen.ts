@@ -9,16 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AudiosRouteImport } from './routes/audios'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AudiosAudioIdRouteImport } from './routes/audios.$audioId'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authProfileRouteImport } from './routes/(auth)/profile'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AudiosRoute = AudiosRouteImport.update({
+  id: '/audios',
+  path: '/audios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -30,6 +31,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AudiosAudioIdRoute = AudiosAudioIdRouteImport.update({
+  id: '/$audioId',
+  path: '/$audioId',
+  getParentRoute: () => AudiosRoute,
 } as any)
 const authRegisterRoute = authRegisterRouteImport.update({
   id: '/(auth)/register',
@@ -50,47 +56,65 @@ const authLoginRoute = authLoginRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/dashboard': typeof DashboardRoute
+  '/audios': typeof AudiosRouteWithChildren
   '/login': typeof authLoginRoute
   '/profile': typeof authProfileRoute
   '/register': typeof authRegisterRoute
+  '/audios/$audioId': typeof AudiosAudioIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/dashboard': typeof DashboardRoute
+  '/audios': typeof AudiosRouteWithChildren
   '/login': typeof authLoginRoute
   '/profile': typeof authProfileRoute
   '/register': typeof authRegisterRoute
+  '/audios/$audioId': typeof AudiosAudioIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/dashboard': typeof DashboardRoute
+  '/audios': typeof AudiosRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/profile': typeof authProfileRoute
   '/(auth)/register': typeof authRegisterRoute
+  '/audios/$audioId': typeof AudiosAudioIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/dashboard' | '/login' | '/profile' | '/register'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/audios'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/audios/$audioId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/dashboard' | '/login' | '/profile' | '/register'
+  to:
+    | '/'
+    | '/about'
+    | '/audios'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/audios/$audioId'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/dashboard'
+    | '/audios'
     | '/(auth)/login'
     | '/(auth)/profile'
     | '/(auth)/register'
+    | '/audios/$audioId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  DashboardRoute: typeof DashboardRoute
+  AudiosRoute: typeof AudiosRouteWithChildren
   authLoginRoute: typeof authLoginRoute
   authProfileRoute: typeof authProfileRoute
   authRegisterRoute: typeof authRegisterRoute
@@ -98,11 +122,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/audios': {
+      id: '/audios'
+      path: '/audios'
+      fullPath: '/audios'
+      preLoaderRoute: typeof AudiosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -118,6 +142,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/audios/$audioId': {
+      id: '/audios/$audioId'
+      path: '/$audioId'
+      fullPath: '/audios/$audioId'
+      preLoaderRoute: typeof AudiosAudioIdRouteImport
+      parentRoute: typeof AudiosRoute
     }
     '/(auth)/register': {
       id: '/(auth)/register'
@@ -143,10 +174,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AudiosRouteChildren {
+  AudiosAudioIdRoute: typeof AudiosAudioIdRoute
+}
+
+const AudiosRouteChildren: AudiosRouteChildren = {
+  AudiosAudioIdRoute: AudiosAudioIdRoute,
+}
+
+const AudiosRouteWithChildren =
+  AudiosRoute._addFileChildren(AudiosRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  DashboardRoute: DashboardRoute,
+  AudiosRoute: AudiosRouteWithChildren,
   authLoginRoute: authLoginRoute,
   authProfileRoute: authProfileRoute,
   authRegisterRoute: authRegisterRoute,

@@ -9,7 +9,7 @@ import { ErrorComponent } from "@components/error";
 const tabs: NavBarNavigation = [
   { href: "/", title: "Home" },
   { href: "/about", title: "About" },
-  { href: "/dashboard", title: "Dashboard", authNeeded: true },
+  { href: "/audios", title: "Audios", authNeeded: true },
 ];
 
 export const Route = createRootRoute({
