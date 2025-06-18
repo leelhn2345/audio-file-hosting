@@ -85,6 +85,10 @@ audio-file-hosting/
 > ensure that these ports are unoccupied: 3000, 5000, 5432, 9000, 9001
 
 ```sh
+docker compose up -d
+
+# OR if you are able to run `make`
+
 make all # this will instantiate everything from infra to application start.
 ```
 
