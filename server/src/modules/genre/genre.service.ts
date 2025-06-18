@@ -29,18 +29,23 @@ export async function getGenres(
 
   const orderBy = queryOrderBy(pagination.sortBy, pagination.sortOrder);
 
-  const data = await db
-    .select()
-    .from(genreTable)
-    .where(filter)
-    .orderBy(orderBy)
-    .limit(pagination.limit ?? 10)
-    .offset(pagination.offset ?? 0);
+  let data;
+  if (pagination.pagination) {
+    data = await db
+      .select()
+      .from(genreTable)
+      .where(filter)
+      .orderBy(orderBy)
+      .limit(pagination.limit ?? 10)
+      .offset(pagination.offset ?? 0);
+  } else {
+    data = await db.select().from(genreTable).where(filter).orderBy(orderBy);
+  }
 
   return { total, data };
 }
 
-export async function postGenre(genreName: string, user: UserSessionType) {
+export async function putGenre(genreName: string, user: UserSessionType) {
   const newId = await db
     .insert(genreTable)
     .values({ id: randomUUID(), name: genreName, userId: user.id })

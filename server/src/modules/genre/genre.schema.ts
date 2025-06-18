@@ -12,6 +12,9 @@ export const GenrePaginationSchema = t.Composite([
     textSearch: t.Optional(
       t.String({ description: "Searches relevant fields." }),
     ),
+    pagination: t.Optional(
+      t.Boolean({ description: "If `true`, `offset` & `limit` will be used." }),
+    ),
   }),
 ]);
 
