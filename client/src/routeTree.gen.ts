@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GenresIndexRouteImport } from './routes/genres/index'
 import { Route as AudiosIndexRouteImport } from './routes/audios/index'
+import { Route as GenresGenreIdRouteImport } from './routes/genres/$genreId'
 import { Route as AudiosAudioIdRouteImport } from './routes/audios/$audioId'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authProfileRouteImport } from './routes/(auth)/profile'
@@ -27,9 +29,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GenresIndexRoute = GenresIndexRouteImport.update({
+  id: '/genres/',
+  path: '/genres/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AudiosIndexRoute = AudiosIndexRouteImport.update({
   id: '/audios/',
   path: '/audios/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GenresGenreIdRoute = GenresGenreIdRouteImport.update({
+  id: '/genres/$genreId',
+  path: '/genres/$genreId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AudiosAudioIdRoute = AudiosAudioIdRouteImport.update({
@@ -60,7 +72,9 @@ export interface FileRoutesByFullPath {
   '/profile': typeof authProfileRoute
   '/register': typeof authRegisterRoute
   '/audios/$audioId': typeof AudiosAudioIdRoute
+  '/genres/$genreId': typeof GenresGenreIdRoute
   '/audios': typeof AudiosIndexRoute
+  '/genres': typeof GenresIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,7 +83,9 @@ export interface FileRoutesByTo {
   '/profile': typeof authProfileRoute
   '/register': typeof authRegisterRoute
   '/audios/$audioId': typeof AudiosAudioIdRoute
+  '/genres/$genreId': typeof GenresGenreIdRoute
   '/audios': typeof AudiosIndexRoute
+  '/genres': typeof GenresIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,7 +95,9 @@ export interface FileRoutesById {
   '/(auth)/profile': typeof authProfileRoute
   '/(auth)/register': typeof authRegisterRoute
   '/audios/$audioId': typeof AudiosAudioIdRoute
+  '/genres/$genreId': typeof GenresGenreIdRoute
   '/audios/': typeof AudiosIndexRoute
+  '/genres/': typeof GenresIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,7 +108,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/audios/$audioId'
+    | '/genres/$genreId'
     | '/audios'
+    | '/genres'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -99,7 +119,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/audios/$audioId'
+    | '/genres/$genreId'
     | '/audios'
+    | '/genres'
   id:
     | '__root__'
     | '/'
@@ -108,7 +130,9 @@ export interface FileRouteTypes {
     | '/(auth)/profile'
     | '/(auth)/register'
     | '/audios/$audioId'
+    | '/genres/$genreId'
     | '/audios/'
+    | '/genres/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,7 +142,9 @@ export interface RootRouteChildren {
   authProfileRoute: typeof authProfileRoute
   authRegisterRoute: typeof authRegisterRoute
   AudiosAudioIdRoute: typeof AudiosAudioIdRoute
+  GenresGenreIdRoute: typeof GenresGenreIdRoute
   AudiosIndexRoute: typeof AudiosIndexRoute
+  GenresIndexRoute: typeof GenresIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -137,11 +163,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/genres/': {
+      id: '/genres/'
+      path: '/genres'
+      fullPath: '/genres'
+      preLoaderRoute: typeof GenresIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/audios/': {
       id: '/audios/'
       path: '/audios'
       fullPath: '/audios'
       preLoaderRoute: typeof AudiosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/genres/$genreId': {
+      id: '/genres/$genreId'
+      path: '/genres/$genreId'
+      fullPath: '/genres/$genreId'
+      preLoaderRoute: typeof GenresGenreIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/audios/$audioId': {
@@ -182,7 +222,9 @@ const rootRouteChildren: RootRouteChildren = {
   authProfileRoute: authProfileRoute,
   authRegisterRoute: authRegisterRoute,
   AudiosAudioIdRoute: AudiosAudioIdRoute,
+  GenresGenreIdRoute: GenresGenreIdRoute,
   AudiosIndexRoute: AudiosIndexRoute,
+  GenresIndexRoute: GenresIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
