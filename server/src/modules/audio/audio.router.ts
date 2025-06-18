@@ -33,7 +33,7 @@ export async function audioRouter(server: FastifyInstance) {
       response: {
         200: t.Composite([
           allDataSchemaExtender(AudioTableSchema),
-          t.Object({ totalFileSize: t.Number() }),
+          t.Object({ totalFileSize: t.Union([t.Number(), t.Null()]) }),
         ]),
       },
     },
@@ -54,7 +54,12 @@ export async function audioRouter(server: FastifyInstance) {
       tags,
       params: t.Object({ audioId: t.String({ format: "uuid" }) }),
       response: {
-        200: AudioTableSchema,
+        200: t.Composite([
+          AudioTableSchema,
+          t.Object({
+            genres: t.Array(t.Object({ id: t.String(), name: t.String() })),
+          }),
+        ]),
       },
     },
     handler: async (

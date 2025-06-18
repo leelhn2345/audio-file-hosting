@@ -1,12 +1,13 @@
 import { Static } from "@sinclair/typebox";
 import { randomUUID } from "crypto";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, getTableColumns, sql } from "drizzle-orm";
 
 import { minioClient } from "@config/minio.js";
 
 import { db } from "@db/index.js";
 import { audioGenreTable } from "@db/tables/audio-genre.table.js";
 import { audioTable } from "@db/tables/audio.table.js";
+import { genreTable } from "@db/tables/genre.table.js";
 
 import {
   AudioGenreSchema,
@@ -68,7 +69,13 @@ export async function getAudio(audioId: string, user: UserSessionType) {
     .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)))
     .then((x) => x[0]);
 
-  return data;
+  const genres = await db
+    .select({ genreId: genreTable.id, genreName: genreTable.name })
+    .from(audioGenreTable)
+    .innerJoin(genreTable, eq(audioGenreTable.genreId, genreTable.id))
+    .where(eq(audioGenreTable.audioId, audioId));
+
+  return { ...data, genres };
 }
 
 export async function deleteAudio(audioId: string, user: UserSessionType) {
