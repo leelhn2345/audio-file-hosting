@@ -18,6 +18,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_USER:-minioUser}
       MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-minioPassword}
+      MINIO_SERVER_URL: http://localhost:9000
     volumes:
       - ~/minio/data:/data
     command:
@@ -27,6 +28,8 @@ services:
       - ":9001"
 
   server:
+    extra_hosts:
+      - "localhost:host-gateway" # needed for generating pre-signed url
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -38,13 +41,12 @@ services:
     environment:
       NODE_ENV: development # or production
       CLIENT_ORIGIN: http://localhost:3000
-      DATABASE_URL: postgres://${DB_USER:-user}:${DB_PASSWORD:-password}@postgres:5432/${DB_NAME:-web-audio}
+      DATABASE_URL: postgres://${DB_USER:-user}:${DB_PASSWORD:-password}@localhost:5432/${DB_NAME:-web-audio}
 
       JWT_SECRET: someverylongsecretforjwtsession
       SESSION_SECRET: someverylongsecretforcookiesession
 
-      MINIO_ENDPOINT: minio
-      MINIO_PUBLIC_ENDPOINT: localhost
+      MINIO_ENDPOINT: localhost
       MINIO_PORT: 9000
       MINIO_ACCESS_KEY: ${MINIO_USER:-minioUser}
       MINIO_SECRET_KEY: ${MINIO_PASSWORD:-minioPassword}
