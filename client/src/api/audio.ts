@@ -16,6 +16,11 @@ export interface Audio extends NewAudio {
   genres: { genreId: string; genreName: string }[];
 }
 
+type AudioGenreId = {
+  audioId: string;
+  genreId: string;
+};
+
 export async function getAudios(): Promise<{
   total: number;
   data: Audio[];
@@ -84,6 +89,34 @@ export async function postAudio(audioData: NewAudio) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(audioData),
+    credentials: "include",
+  });
+  const result = await res.json();
+  if (!res.ok) throw new Error(result.message);
+  return result;
+}
+
+export async function putAudioGenre(audioGenreId: AudioGenreId) {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/audio/genre`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(audioGenreId),
+    credentials: "include",
+  });
+  const result = await res.json();
+  if (!res.ok) throw new Error(result.message);
+  return result;
+}
+
+export async function deleteAudioGenre(audioGenreId: AudioGenreId) {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/audio/genre`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(audioGenreId),
     credentials: "include",
   });
   const result = await res.json();
