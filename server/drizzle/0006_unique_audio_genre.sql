@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "uniqueAudioGenre" ON "audios_genres" USING btree ("audio_id","genre_id");
