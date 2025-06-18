@@ -1,4 +1,6 @@
 import { SecureSessionPluginOptions } from "@fastify/secure-session";
+import fs from "fs";
+import path from "path";
 
 type FastifySecureSession = SecureSessionPluginOptions &
   Required<Pick<SecureSessionPluginOptions, "sessionName">>;
@@ -6,7 +8,7 @@ type FastifySecureSession = SecureSessionPluginOptions &
 export const sessionConfig: FastifySecureSession[] = [
   {
     sessionName: "userSession",
-    key: Buffer.from(process.env.SESSION_KEY, "hex"),
+    key: fs.readFileSync(path.join(process.cwd(), "secret-key")),
     secret: process.env.SESSION_SECRET,
     cookie: {
       // maxAge is in seconds.
