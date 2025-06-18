@@ -13,7 +13,7 @@ import {
   deleteGenre,
   getGenreById,
   getGenres,
-  putGenre,
+  postGenre,
 } from "./genre.service.js";
 
 const tags = ["genre"];
@@ -52,7 +52,7 @@ export async function genreRouter(server: FastifyInstance) {
     },
   });
 
-  server.put("/genre", {
+  server.post("/genre", {
     schema: {
       tags,
       body: t.Object({ name: t.String() }),
@@ -60,7 +60,7 @@ export async function genreRouter(server: FastifyInstance) {
     },
     handler: async (req: FastifyRequest<{ Body: { name: string } }>, reply) => {
       const user = getUserSession(req);
-      const newId = await putGenre(req.body.name, user);
+      const newId = await postGenre(req.body.name, user);
       reply
         .status(201)
         .send({ id: newId, message: "Genre created successfully." });

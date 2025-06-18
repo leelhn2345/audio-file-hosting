@@ -25,6 +25,7 @@ export const GenreTableSchema = createInsertSchema(genreTable);
 export const AllGenreSchema = allDataSchemaExtender(GenreTableSchema);
 
 export const GenreSchema = t.Object({
+  id: t.String(),
   name: t.String(),
   totalFileSize: t.Number(),
   audios: t.Array(AudioTableSchema),
