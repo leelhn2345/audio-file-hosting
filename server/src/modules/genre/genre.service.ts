@@ -70,10 +70,10 @@ export async function getGenreById(genreId: string, user: UserSessionType) {
     .where(eq(audioGenreTable.genreId, id))
     .then((x) => x[0].totalFileSize);
 
-  return { name, audios, totalFileSize };
+  return { id, name, audios, totalFileSize };
 }
 
-export async function putGenre(genreName: string, user: UserSessionType) {
+export async function postGenre(genreName: string, user: UserSessionType) {
   const newId = await db
     .insert(genreTable)
     .values({ id: randomUUID(), name: genreName, userId: user.id })
