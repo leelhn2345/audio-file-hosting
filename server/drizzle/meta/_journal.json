@@ -36,6 +36,13 @@
       "when": 1750245822520,
       "tag": "0004_unique_user_genre",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1750246768261,
+      "tag": "0005_genre_metadata",
+      "breakpoints": true
     }
   ]
 }
