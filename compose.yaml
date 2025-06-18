@@ -25,3 +25,37 @@ services:
       - /data
       - --console-address
       - ":9001"
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+      - minio
+    ports:
+      - 5000:5000
+    environment:
+      NODE_ENV: development # or production
+      CLIENT_ORIGIN: http://localhost:3000
+      DATABASE_URL: postgres://${DB_USER:-user}:${DB_PASSWORD:-password}@postgres:5432/${DB_NAME:-web-audio}
+
+      JWT_SECRET: someverylongsecretforjwtsession
+      SESSION_SECRET: someverylongsecretforcookiesession
+
+      MINIO_ENDPOINT: minio
+      MINIO_PUBLIC_ENDPOINT: localhost
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: ${MINIO_USER:-minioUser}
+      MINIO_SECRET_KEY: ${MINIO_PASSWORD:-minioPassword}
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        - VITE_BACKEND_URL=http://localhost:5000
+    depends_on:
+      - server
+    ports:
+      - 3000:3000
