@@ -6,3 +6,5 @@ dev: ## setup local dev environment
 down: ## tear down all containers
 	docker compose down
 
+all: ## setup local dev + application
+	docker compose up
