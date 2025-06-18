@@ -1,6 +1,6 @@
 import { Static } from "@sinclair/typebox";
 import { randomUUID } from "crypto";
-import { and, eq, getTableColumns, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 import { minioClient } from "@config/minio.js";
 
