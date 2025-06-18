@@ -1,4 +1,5 @@
 import { Static } from "@sinclair/typebox";
+import { randomUUID } from "crypto";
 import { and, eq } from "drizzle-orm";
 
 import { db } from "@db/index.js";
@@ -37,4 +38,23 @@ export async function getGenres(
     .offset(pagination.offset ?? 0);
 
   return { total, data };
+}
+
+export async function postGenre(genreName: string, user: UserSessionType) {
+  const newId = await db
+    .insert(genreTable)
+    .values({ id: randomUUID(), name: genreName, userId: user.id })
+    .onConflictDoUpdate({
+      target: [genreTable.userId, genreTable.name],
+      set: { name: genreName },
+    })
+    .returning({ id: genreTable.id })
+    .then((x) => x[0].id);
+  return newId;
+}
+
+export async function deleteGenre(genreId: string, user: UserSessionType) {
+  await db
+    .delete(genreTable)
+    .where(and(eq(genreTable.id, genreId), eq(genreTable.userId, user.id)));
 }

@@ -1,13 +1,30 @@
-import { Type as t } from "@sinclair/typebox";
+import { Static, Type as t } from "@sinclair/typebox";
 import { FastifyInstance, FastifyRequest } from "fastify";
+
+import { AllGenreSchema, GenrePaginationSchema } from "./genre.schema.js";
+
+import { getUserSession } from "@utils/session.js";
+
+import { deleteGenre, getGenres, postGenre } from "./genre.service.js";
 
 const tags = ["genre"];
 export async function genreRouter(server: FastifyInstance) {
   server.get("/genres", {
     schema: {
       tags,
+      querystring: GenrePaginationSchema,
+      response: { 200: AllGenreSchema },
     },
-    handler: async (req, reply) => {},
+    handler: async (
+      req: FastifyRequest<{
+        Querystring: Static<typeof GenrePaginationSchema>;
+      }>,
+      reply,
+    ) => {
+      const user = getUserSession(req);
+      const res = await getGenres(req.query, user);
+      reply.send(res);
+    },
   });
 
   server.get("/genre/:genreId", {
@@ -25,18 +42,30 @@ export async function genreRouter(server: FastifyInstance) {
     schema: {
       tags,
       body: t.Object({ name: t.String() }),
+      response: { 201: t.Object({ message: t.String() }) },
     },
-    handler: async (
-      req: FastifyRequest<{ Body: { name: string } }>,
-      reply,
-    ) => {},
+    handler: async (req: FastifyRequest<{ Body: { name: string } }>, reply) => {
+      const user = getUserSession(req);
+      const newId = await postGenre(req.body.name, user);
+      reply
+        .status(201)
+        .send({ id: newId, message: "Genre created successfully." });
+    },
   });
 
   server.delete("/genre/:genreId", {
     schema: {
       tags,
       params: t.Object({ genreId: t.String() }),
+      response: { 204: t.Object({ message: t.String() }) },
     },
-    handler: async (req, reply) => {},
+    handler: async (
+      req: FastifyRequest<{ Params: { genreId: string } }>,
+      reply,
+    ) => {
+      const user = getUserSession(req);
+      await deleteGenre(req.params.genreId, user);
+      reply.status(204).send({ message: "Genre deleted successfully." });
+    },
   });
 }
