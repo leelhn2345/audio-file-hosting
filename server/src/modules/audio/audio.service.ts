@@ -34,13 +34,19 @@ export async function getAllAudios(
 
   const orderBy = queryOrderBy(pagination.sortBy, pagination.sortOrder);
 
-  const data = await db
-    .select()
-    .from(audioTable)
-    .where(filter)
-    .orderBy(orderBy)
-    .limit(pagination.limit ?? 10)
-    .offset(pagination.offset ?? 0);
+  let data;
+
+  if (pagination.pagination) {
+    data = await db
+      .select()
+      .from(audioTable)
+      .where(filter)
+      .orderBy(orderBy)
+      .limit(pagination.limit ?? 10)
+      .offset(pagination.offset ?? 0);
+  } else {
+    data = await db.select().from(audioTable).where(filter).orderBy(orderBy);
+  }
 
   const totalFileSize = await db
     .select({
