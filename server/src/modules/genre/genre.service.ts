@@ -76,7 +76,11 @@ export async function getGenreById(genreId: string, user: UserSessionType) {
 export async function postGenre(genreName: string, user: UserSessionType) {
   const newId = await db
     .insert(genreTable)
-    .values({ id: randomUUID(), name: genreName, userId: user.id })
+    .values({
+      id: randomUUID(),
+      name: genreName.toLowerCase(),
+      userId: user.id,
+    })
     .onConflictDoUpdate({
       target: [genreTable.userId, genreTable.name],
       set: { name: genreName },

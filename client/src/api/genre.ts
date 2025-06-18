@@ -7,7 +7,10 @@ type AllGenres = {
   updatedAt: string;
 };
 
-export async function getGenres(): Promise<{ total: number; data: AllGenres }> {
+export async function getGenres(): Promise<{
+  total: number;
+  data: AllGenres[];
+}> {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/genres`, {
     headers: {
       "Content-Type": "application/json",
@@ -41,22 +44,15 @@ export async function getGenreById(genreId: string): Promise<Genre> {
 }
 
 export async function deleteGenre(genreId: string) {
-  const res = await fetch(
-    `${import.meta.env.VITE_BACKEND_URL}/genre/${genreId}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    },
-  );
-  const result = await res.json();
-  if (!res.ok) throw new Error(result.message);
-  return result;
+  await fetch(`${import.meta.env.VITE_BACKEND_URL}/genre/${genreId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
 }
 
-export async function postGenre(name: string) {
+export async function postGenre(
+  name: string,
+): Promise<{ id: string; message: string }> {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/genre`, {
     method: "POST",
     headers: {
