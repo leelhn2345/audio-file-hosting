@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "uniqueUserGenre" ON "genres" USING btree ("name","user_id");

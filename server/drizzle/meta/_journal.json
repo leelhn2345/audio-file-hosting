@@ -29,6 +29,27 @@
       "when": 1749975050606,
       "tag": "0003_unique_audio",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1750245822520,
+      "tag": "0004_unique_user_genre",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1750246768261,
+      "tag": "0005_genre_metadata",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1750249939574,
+      "tag": "0006_unique_audio_genre",
+      "breakpoints": true
     }
   ]
 }

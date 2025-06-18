@@ -3,6 +3,7 @@ import { FastifyInstance } from "fastify/types/instance.js";
 import { FastifyRequest } from "fastify/types/request.js";
 
 import {
+  AudioGenreSchema,
   AudioPaginationSchema,
   AudioTableSchema,
   PostAudioSchema,
@@ -14,10 +15,12 @@ import { getUserSession } from "@utils/session.js";
 
 import {
   deleteAudio,
+  deleteAudioFromGenre,
   getAllAudios,
   getAudio,
   postAudio,
   putAudio,
+  putAudioToGenre,
 } from "./audio.service.js";
 
 const tags = ["audio"];
@@ -30,7 +33,7 @@ export async function audioRouter(server: FastifyInstance) {
       response: {
         200: t.Composite([
           allDataSchemaExtender(AudioTableSchema),
-          t.Object({ totalFileSize: t.Number() }),
+          t.Object({ totalFileSize: t.Union([t.Number(), t.Null()]) }),
         ]),
       },
     },
@@ -51,7 +54,12 @@ export async function audioRouter(server: FastifyInstance) {
       tags,
       params: t.Object({ audioId: t.String({ format: "uuid" }) }),
       response: {
-        200: AudioTableSchema,
+        200: t.Composite([
+          AudioTableSchema,
+          t.Object({
+            genres: t.Array(t.Object({ id: t.String(), name: t.String() })),
+          }),
+        ]),
       },
     },
     handler: async (
@@ -110,6 +118,36 @@ export async function audioRouter(server: FastifyInstance) {
       const user = getUserSession(req);
       await deleteAudio(req.params.audioId, user);
       reply.send({ message: "Audio successfully deleted." });
+    },
+  });
+
+  server.put("/audio/genre", {
+    schema: {
+      description: "tag an audio to a genre",
+      tags,
+      body: AudioGenreSchema,
+    },
+    handler: async (
+      req: FastifyRequest<{ Body: Static<typeof AudioGenreSchema> }>,
+      reply,
+    ) => {
+      await putAudioToGenre(req.body);
+      reply.send({ message: "Audio added to genre successfully." });
+    },
+  });
+
+  server.delete("/audio/genre", {
+    schema: {
+      description: "delete an audio from a genre",
+      tags,
+      body: AudioGenreSchema,
+    },
+    handler: async (
+      req: FastifyRequest<{ Body: Static<typeof AudioGenreSchema> }>,
+      reply,
+    ) => {
+      await deleteAudioFromGenre(req.body);
+      reply.send({ message: "Audio deleted from genre successfully." });
     },
   });
 }

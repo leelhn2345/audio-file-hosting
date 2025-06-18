@@ -12,6 +12,11 @@ export const AudioPaginationSchema = t.Composite([
     textSearch: t.Optional(
       t.String({ description: "Searches relevant fields." }),
     ),
+    pagination: t.Optional(
+      t.Boolean({
+        description: "If set to `true`, `offset` & `limit` will be used.",
+      }),
+    ),
   }),
 ]);
 
@@ -29,3 +34,8 @@ export const PostAudioSchema = t.Pick(AudioTableSchema, [
 ]);
 
 export const PutAudioSchema = PostAudioSchema;
+
+export const AudioGenreSchema = t.Object({
+  audioId: t.String(),
+  genreId: t.String(),
+});

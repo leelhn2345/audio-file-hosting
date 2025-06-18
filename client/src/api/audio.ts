@@ -18,7 +18,7 @@ export interface Audio extends NewAudio {
 export async function getAudios(): Promise<{
   total: number;
   data: Audio[];
-  totalFileSize: number;
+  totalFileSize: number | null;
 }> {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/audios`, {
     headers: {

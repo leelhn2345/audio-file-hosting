@@ -16,6 +16,7 @@ import { errorHandler } from "@middleware/error-handler.js";
 import { audioRouter } from "@modules/audio/audio.router.js";
 import { authRouter } from "@modules/auth/auth.router.js";
 import { fileRouter } from "@modules/file/file.router.js";
+import { genreRouter } from "@modules/genre/genre.router.js";
 import { userRouter } from "@modules/user/user.router.js";
 
 import { logger } from "@utils/logger.js";
@@ -52,6 +53,7 @@ app.register(authRouter);
 app.register(userRouter);
 app.register(audioRouter);
 app.register(fileRouter);
+app.register(genreRouter);
 
 /** for api health check */
 app.get("/api/health", () => {

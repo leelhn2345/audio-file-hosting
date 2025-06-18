@@ -5,9 +5,12 @@ import { and, eq, sql } from "drizzle-orm";
 import { minioClient } from "@config/minio.js";
 
 import { db } from "@db/index.js";
+import { audioGenreTable } from "@db/tables/audio-genre.table.js";
 import { audioTable } from "@db/tables/audio.table.js";
+import { genreTable } from "@db/tables/genre.table.js";
 
 import {
+  AudioGenreSchema,
   AudioPaginationSchema,
   PostAudioSchema,
   PutAudioSchema,
@@ -34,13 +37,19 @@ export async function getAllAudios(
 
   const orderBy = queryOrderBy(pagination.sortBy, pagination.sortOrder);
 
-  const data = await db
-    .select()
-    .from(audioTable)
-    .where(filter)
-    .orderBy(orderBy)
-    .limit(pagination.limit ?? 10)
-    .offset(pagination.offset ?? 0);
+  let data;
+
+  if (pagination.pagination) {
+    data = await db
+      .select()
+      .from(audioTable)
+      .where(filter)
+      .orderBy(orderBy)
+      .limit(pagination.limit ?? 10)
+      .offset(pagination.offset ?? 0);
+  } else {
+    data = await db.select().from(audioTable).where(filter).orderBy(orderBy);
+  }
 
   const totalFileSize = await db
     .select({
@@ -60,7 +69,13 @@ export async function getAudio(audioId: string, user: UserSessionType) {
     .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)))
     .then((x) => x[0]);
 
-  return data;
+  const genres = await db
+    .select({ genreId: genreTable.id, genreName: genreTable.name })
+    .from(audioGenreTable)
+    .innerJoin(genreTable, eq(audioGenreTable.genreId, genreTable.id))
+    .where(eq(audioGenreTable.audioId, audioId));
+
+  return { ...data, genres };
 }
 
 export async function deleteAudio(audioId: string, user: UserSessionType) {
@@ -99,4 +114,25 @@ export async function putAudio(
     .update(audioTable)
     .set({ ...data })
     .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)));
+}
+
+export async function putAudioToGenre(data: Static<typeof AudioGenreSchema>) {
+  const { audioId, genreId } = data;
+  await db
+    .insert(audioGenreTable)
+    .values({ id: randomUUID(), audioId, genreId });
+}
+
+export async function deleteAudioFromGenre(
+  data: Static<typeof AudioGenreSchema>,
+) {
+  const { audioId, genreId } = data;
+  await db
+    .delete(audioGenreTable)
+    .where(
+      and(
+        eq(audioGenreTable.audioId, audioId),
+        eq(audioGenreTable.genreId, genreId),
+      ),
+    );
 }
