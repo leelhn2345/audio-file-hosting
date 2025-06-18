@@ -3,7 +3,7 @@ import { pgTable, uuid } from "drizzle-orm/pg-core";
 import { audioTable } from "./audio.table.js";
 import { genreTable } from "./genre.table.js";
 
-export const audioGenre = pgTable("audios_genres", {
+export const audioGenreTable = pgTable("audios_genres", {
   id: uuid().primaryKey(),
   audioId: uuid()
     .references(() => audioTable.id, { onDelete: "cascade" })

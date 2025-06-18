@@ -3,6 +3,8 @@ import { createInsertSchema } from "drizzle-typebox";
 
 import { genreTable } from "@db/tables/genre.table.js";
 
+import { AudioTableSchema } from "@modules/audio/audio.schema.js";
+
 import { PaginationSchema } from "@utils/pagination.js";
 import { allDataSchemaExtender } from "@utils/schema.js";
 
@@ -21,3 +23,9 @@ export const GenrePaginationSchema = t.Composite([
 export const GenreTableSchema = createInsertSchema(genreTable);
 
 export const AllGenreSchema = allDataSchemaExtender(GenreTableSchema);
+
+export const GenreSchema = t.Object({
+  name: t.String(),
+  totalFileSize: t.Number(),
+  audios: t.Array(AudioTableSchema),
+});

@@ -1,8 +1,9 @@
 import { Static } from "@sinclair/typebox";
 import { randomUUID } from "crypto";
-import { and, eq } from "drizzle-orm";
+import { and, eq, getTableColumns, sql } from "drizzle-orm";
 
 import { db } from "@db/index.js";
+import { audioGenreTable } from "@db/tables/audio-genre.table.js";
 import { audioTable } from "@db/tables/audio.table.js";
 import { genreTable } from "@db/tables/genre.table.js";
 
@@ -43,6 +44,33 @@ export async function getGenres(
   }
 
   return { total, data };
+}
+
+export async function getGenreById(genreId: string, user: UserSessionType) {
+  const { id, name } = await db
+    .select({ name: genreTable.name, id: genreTable.id })
+    .from(genreTable)
+    .where(and(eq(genreTable.id, genreId), eq(genreTable.userId, user.id)))
+    .then((x) => x[0]);
+
+  const audios = await db
+    .select({ ...getTableColumns(audioTable) })
+    .from(genreTable)
+    .innerJoin(audioGenreTable, eq(genreTable.id, audioGenreTable.genreId))
+    .innerJoin(audioTable, eq(audioGenreTable.audioId, audioTable.id))
+    .where(eq(audioGenreTable.genreId, id));
+
+  const totalFileSize = await db
+    .select({
+      totalFileSize: sql<number>`SUM((${audioTable.fileObject}->>'fileSize')::numeric)`,
+    })
+    .from(genreTable)
+    .innerJoin(audioGenreTable, eq(genreTable.id, audioGenreTable.genreId))
+    .innerJoin(audioTable, eq(audioGenreTable.audioId, audioTable.id))
+    .where(eq(audioGenreTable.genreId, id))
+    .then((x) => x[0].totalFileSize);
+
+  return { name, audios, totalFileSize };
 }
 
 export async function putGenre(genreName: string, user: UserSessionType) {

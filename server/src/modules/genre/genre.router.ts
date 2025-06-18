@@ -1,11 +1,20 @@
 import { Static, Type as t } from "@sinclair/typebox";
 import { FastifyInstance, FastifyRequest } from "fastify";
 
-import { AllGenreSchema, GenrePaginationSchema } from "./genre.schema.js";
+import {
+  AllGenreSchema,
+  GenrePaginationSchema,
+  GenreSchema,
+} from "./genre.schema.js";
 
 import { getUserSession } from "@utils/session.js";
 
-import { deleteGenre, getGenres, putGenre } from "./genre.service.js";
+import {
+  deleteGenre,
+  getGenreById,
+  getGenres,
+  putGenre,
+} from "./genre.service.js";
 
 const tags = ["genre"];
 export async function genreRouter(server: FastifyInstance) {
@@ -31,11 +40,16 @@ export async function genreRouter(server: FastifyInstance) {
     schema: {
       tags,
       params: t.Object({ genreId: t.String() }),
+      response: { 200: GenreSchema },
     },
     handler: async (
       req: FastifyRequest<{ Params: { genreId: string } }>,
       reply,
-    ) => {},
+    ) => {
+      const user = getUserSession(req);
+      const res = await getGenreById(req.params.genreId, user);
+      reply.send(res);
+    },
   });
 
   server.put("/genre", {
