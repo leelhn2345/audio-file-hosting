@@ -10,6 +10,7 @@ const tabs: NavBarNavigation = [
   { href: "/", title: "Home" },
   { href: "/about", title: "About" },
   { href: "/audios", title: "Audios", authNeeded: true },
+  { href: "/genres", title: "Genres", authNeeded: true },
 ];
 
 export const Route = createRootRoute({

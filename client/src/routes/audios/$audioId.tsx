@@ -1,8 +1,9 @@
 import { isAuthenticated } from "@/utils/auth";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getAudio, putAudio, type NewAudio } from "@/api/audio";
+import { getAudio, putAudio, type NewAudio, putAudioGenre, deleteAudioGenre } from "@/api/audio";
 import { generateDownloadUrl, type DownloadFileObject } from "@/api/file";
+import { postGenre } from "@/api/genre";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -39,6 +41,9 @@ import {
   Maximize,
   Minimize,
   Settings,
+  Tag,
+  Plus,
+  X,
 } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
@@ -75,6 +80,7 @@ function RouteComponent() {
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAddGenreDialogOpen, setIsAddGenreDialogOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
@@ -86,6 +92,13 @@ function RouteComponent() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<NewAudio>();
+
+  const {
+    register: registerGenre,
+    handleSubmit: handleGenreSubmit,
+    reset: resetGenre,
+    formState: { errors: genreErrors, isSubmitting: isGenreSubmitting },
+  } = useForm<{ name: string }>();
 
   const {
     data: audio,
@@ -108,6 +121,44 @@ function RouteComponent() {
     },
     onError: (error: Error) => {
       toast.error(`Update failed: ${error.message}`);
+    },
+  });
+
+  const { mutate: createGenreAndTag } = useMutation({
+    mutationFn: async (genreName: string) => {
+      // First create the genre
+      const genreResult = await postGenre(genreName);
+      // Then tag the audio to the genre
+      await putAudioGenre({
+        audioId: audioId,
+        genreId: genreResult.id,
+      });
+      return genreResult;
+    },
+    onSuccess: () => {
+      toast.success("Genre created and audio tagged successfully!");
+      setIsAddGenreDialogOpen(false);
+      resetGenre();
+      refetch();
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to create genre: ${error.message}`);
+    },
+  });
+
+  const { mutate: removeGenreTag } = useMutation({
+    mutationFn: async (genreId: string) => {
+      await deleteAudioGenre({
+        audioId: audioId,
+        genreId: genreId,
+      });
+    },
+    onSuccess: () => {
+      toast.success("Genre tag removed successfully!");
+      refetch();
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to remove genre tag: ${error.message}`);
     },
   });
 
@@ -353,6 +404,10 @@ function RouteComponent() {
 
   const onSubmit = (data: NewAudio) => {
     updateAudio(data);
+  };
+
+  const onGenreSubmit = (data: { name: string }) => {
+    createGenreAndTag(data.name);
   };
 
   if (isPending) {
@@ -727,6 +782,125 @@ function RouteComponent() {
                         <p className="mt-1 text-gray-900">
                           {formatDate(audio.releaseDate)}
                         </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">
+                        Genres
+                      </h3>
+                      <Dialog
+                        open={isAddGenreDialogOpen}
+                        onOpenChange={setIsAddGenreDialogOpen}
+                      >
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-white/50 hover:bg-white/70"
+                          >
+                            <Plus className="mr-1 h-3 w-3" />
+                            Add Genre
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <form onSubmit={handleGenreSubmit(onGenreSubmit)}>
+                            <DialogHeader>
+                              <DialogTitle>Create New Genre</DialogTitle>
+                              <DialogDescription>
+                                Create a new genre and automatically tag this
+                                audio to it.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                              <div className="space-y-2">
+                                <Label htmlFor="genreName">Genre Name</Label>
+                                <Input
+                                  id="genreName"
+                                  placeholder="e.g., Jazz, Rock, Classical..."
+                                  {...registerGenre("name", {
+                                    required: "Genre name is required",
+                                    minLength: {
+                                      value: 1,
+                                      message: "Genre name cannot be empty",
+                                    },
+                                    maxLength: {
+                                      value: 50,
+                                      message:
+                                        "Genre name must be less than 50 characters",
+                                    },
+                                  })}
+                                />
+                                {genreErrors.name && (
+                                  <p className="text-sm text-red-600">
+                                    {genreErrors.name.message}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            <DialogFooter>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                  setIsAddGenreDialogOpen(false);
+                                  resetGenre();
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                type="submit"
+                                disabled={isGenreSubmitting}
+                                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700
+                                  hover:to-blue-700"
+                              >
+                                {isGenreSubmitting
+                                  ? "Creating..."
+                                  : "Create & Tag"}
+                              </Button>
+                            </DialogFooter>
+                          </form>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                    {audio.genres && audio.genres.length > 0 ? (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {audio.genres.map((genre) => (
+                          <div key={genre.genreId} className="group relative">
+                            <Badge
+                              variant="secondary"
+                              className="cursor-pointer border-0 bg-gradient-to-r from-purple-100 to-blue-100 px-3 py-1 pr-8
+                                text-sm font-medium text-purple-700 transition-all duration-200
+                                hover:from-purple-200 hover:to-blue-200"
+                              onClick={() =>
+                                navigate({ to: `/genres/${genre.genreId}` })
+                              }
+                            >
+                              <Tag className="mr-1 h-3 w-3" />
+                              {genre.genreName}
+                            </Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-0 top-0 h-full w-6 p-0 opacity-0 transition-opacity group-hover:opacity-100
+                                hover:bg-red-100 hover:text-red-600"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeGenreTag(genre.genreId);
+                              }}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mt-2 text-sm text-gray-500">
+                        No genres assigned yet. Click "Add Genre" to create and
+                        assign one.
                       </div>
                     )}
                   </div>

@@ -111,15 +111,9 @@ export async function putAudioGenre(audioGenreId: AudioGenreId) {
 }
 
 export async function deleteAudioGenre(audioGenreId: AudioGenreId) {
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/audio/genre`, {
+  await fetch(`${import.meta.env.VITE_BACKEND_URL}/audio/genre`, {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(audioGenreId),
     credentials: "include",
   });
-  const result = await res.json();
-  if (!res.ok) throw new Error(result.message);
-  return result;
 }
