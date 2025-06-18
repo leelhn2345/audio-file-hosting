@@ -5,9 +5,11 @@ import { and, eq, sql } from "drizzle-orm";
 import { minioClient } from "@config/minio.js";
 
 import { db } from "@db/index.js";
+import { audioGenreTable } from "@db/tables/audio-genre.table.js";
 import { audioTable } from "@db/tables/audio.table.js";
 
 import {
+  AudioGenreSchema,
   AudioPaginationSchema,
   PostAudioSchema,
   PutAudioSchema,
@@ -105,4 +107,25 @@ export async function putAudio(
     .update(audioTable)
     .set({ ...data })
     .where(and(eq(audioTable.id, audioId), eq(audioTable.uploadedBy, user.id)));
+}
+
+export async function putAudioToGenre(data: Static<typeof AudioGenreSchema>) {
+  const { audioId, genreId } = data;
+  await db
+    .insert(audioGenreTable)
+    .values({ id: randomUUID(), audioId, genreId });
+}
+
+export async function deleteAudioFromGenre(
+  data: Static<typeof AudioGenreSchema>,
+) {
+  const { audioId, genreId } = data;
+  await db
+    .delete(audioGenreTable)
+    .where(
+      and(
+        eq(audioGenreTable.audioId, audioId),
+        eq(audioGenreTable.genreId, genreId),
+      ),
+    );
 }

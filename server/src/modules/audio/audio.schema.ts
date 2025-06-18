@@ -34,3 +34,8 @@ export const PostAudioSchema = t.Pick(AudioTableSchema, [
 ]);
 
 export const PutAudioSchema = PostAudioSchema;
+
+export const AudioGenreSchema = t.Object({
+  audioId: t.String(),
+  genreId: t.String(),
+});
