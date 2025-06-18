@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: ${DB_USER:-user}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
       POSTGRES_DB: ${DB_NAME:-web-audio}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   minio:
     image: quay.io/minio/minio
@@ -20,7 +22,7 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-minioPassword}
       MINIO_SERVER_URL: http://localhost:9000
     volumes:
-      - ~/minio/data:/data
+      - minio_data:/data
     command:
       - server
       - /data
@@ -61,3 +63,7 @@ services:
       - server
     ports:
       - 3000:3000
+
+volumes:
+  minio_data:
+  postgres_data:
