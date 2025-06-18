@@ -13,6 +13,7 @@ export interface Audio extends NewAudio {
   uploadedBy: string;
   createdAt: string;
   updatedAt: string;
+  genres: { genreId: string; genreName: string }[];
 }
 
 export async function getAudios(): Promise<{
