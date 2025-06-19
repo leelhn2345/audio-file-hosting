@@ -85,7 +85,7 @@ audio-file-hosting/
 > ensure that these ports are unoccupied: 3000, 5000, 5432, 9000, 9001
 
 ```sh
-docker compose up -d
+docker compose up --build --force-recreate -d
 
 # OR if you are able to run `make`
 

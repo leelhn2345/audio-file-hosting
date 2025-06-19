@@ -7,4 +7,4 @@ down: ## tear down all containers
 	docker compose down
 
 all: ## setup local dev + application
-	docker compose up
+	docker compose up --build --force-recreate -d
