@@ -403,7 +403,11 @@ function RouteComponent() {
       mediaUrl.toLowerCase().includes(".m4v"));
 
   const onSubmit = (data: NewAudio) => {
-    updateAudio(data);
+    const processedData = {
+      ...data,
+      releaseDate: data.releaseDate ? new Date(data.releaseDate).toISOString() : data.releaseDate,
+    };
+    updateAudio(processedData);
   };
 
   const onGenreSubmit = (data: { name: string }) => {
