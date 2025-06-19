@@ -9,7 +9,7 @@ it scalable and maintainable.
 
 ## System Architecture
 
-```mermaid
+```sh
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │                 │    │                 │    │                 │
 │     Client      │◄──►│     Server      │◄──►│    Database     │
