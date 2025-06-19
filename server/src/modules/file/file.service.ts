@@ -1,6 +1,6 @@
 import { Static } from "@sinclair/typebox";
 
-import { Buckets, minioClient, minioPublicClient, presignExpiryDuration } from "@config/minio.js";
+import { Buckets, minioClient, presignExpiryDuration } from "@config/minio.js";
 
 import { DuplicatedError } from "@errors/duplicate.js";
 
